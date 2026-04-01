@@ -1,0 +1,256 @@
+{
+  "week": 1,
+  "title": "环境搭建 + Linux基础",
+  "phase": 1,
+
+  "biological_context": {
+    "why": "生物信息学分析需要处理大量测序数据（通常几GB到几TB），Windows图形界面效率低，Linux命令行是行业标准",
+    "real_scenario": "一个RNA-seq项目通常包含几十个样本，每个样本2-3个FASTQ文件，需要批量处理",
+    "industry_standard": "90%以上的生信公司和研究机构使用Linux服务器"
+  },
+
+  "content_dimension": {
+    "difficulty": "★☆☆☆☆",
+    "prerequisites": ["基本计算机操作", "了解文件和文件夹概念"],
+    "knowledge_map": {
+      "current": ["Linux基础命令", "文件系统", "命令行操作"],
+      "next_week": ["Shell脚本", "文本处理"],
+      "related": ["Week 5: Python文件操作", "Week 9: 批量处理测序数据"]
+    },
+    "core_concepts": [
+      {"name": "命令行界面", "importance": "必须", "usage_frequency": "每天"},
+      {"name": "文件路径", "importance": "必须", "usage_frequency": "每天"},
+      {"name": "文件权限", "importance": "重要", "usage_frequency": "经常"}
+    ]
+  },
+
+  "cognitive_dimension": {
+    "bloom_levels": {
+      "remember": [
+        "列出10个最常用的Linux命令",
+        "说出绝对路径和相对路径的区别"
+      ],
+      "understand": [
+        "解释为什么生信分析需要使用Linux",
+        "说明管道符|的工作原理"
+      ],
+      "apply": [
+        "使用命令创建标准项目目录结构",
+        "用grep查找包含特定序列的reads"
+      ],
+      "analyze": [
+        "比较cat、head、tail查看文件的使用场景",
+        "分析一个复杂命令的执行流程"
+      ]
+    },
+    "learning_strategies": {
+      "primary": "主动练习 + 间隔重复",
+      "tools": ["命令速查卡片", "每日命令挑战"],
+      "practice_method": "每个命令至少使用5次才算掌握"
+    },
+    "metacognition": {
+      "self_check": [
+        "我能不看文档完成基本文件操作吗？",
+        "遇到不会的命令，我知道如何查找帮助吗？",
+        "我理解每个命令的参数含义吗？"
+      ],
+      "reflection_questions": [
+        "本周最难的概念是什么？为什么难？",
+        "我的学习方法有效吗？需要调整吗？",
+        "如果重新学一遍，我会怎么做？"
+      ]
+    }
+  },
+
+  "collaborative_dimension": {
+    "peer_learning": {
+      "pair_practice": {
+        "task": "两人一组，一人说命令，一人执行，完成文件操作任务",
+        "duration": "30分钟",
+        "roles": "每15分钟交换角色"
+      },
+      "group_discussion": {
+        "topic": "分享本周遇到的问题和解决方法",
+        "format": "每人5分钟，小组4-6人",
+        "output": "整理成FAQ文档"
+      }
+    },
+    "code_review": {
+      "task": "互相检查对方的目录结构和命令历史",
+      "checklist": [
+        "目录结构是否规范？",
+        "命令使用是否正确？",
+        "有没有更简洁的写法？"
+      ]
+    },
+    "community": {
+      "share": "在学习群分享一个有用的Linux技巧",
+      "help": "帮助至少一位同学解决问题",
+      "learn": "从他人分享中学到至少一个新技巧"
+    }
+  },
+
+  "contextual_dimension": {
+    "real_world_scenario": {
+      "title": "场景：处理新到的测序数据",
+      "background": "你是一家生物公司的实习生，测序公司刚发来10个样本的RNA-seq数据（每个样本2个文件：R1和R2）",
+      "challenge": "需要在1小时内完成数据接收、整理和质量初检",
+      "tasks": [
+        {
+          "step": 1,
+          "action": "创建项目目录结构",
+          "command": "mkdir -p project/{raw_data,clean_data,results,scripts,docs}",
+          "why": "规范的目录结构是团队协作的基础"
+        },
+        {
+          "step": 2,
+          "action": "检查数据完整性",
+          "command": "ls -lh raw_data/ | wc -l",
+          "why": "确认20个文件都收到了"
+        },
+        {
+          "step": 3,
+          "action": "快速查看数据格式",
+          "command": "head -n 4 sample1_R1.fastq",
+          "why": "确认是FASTQ格式，每条reads 4行"
+        },
+        {
+          "step": 4,
+          "action": "统计数据量",
+          "command": "wc -l sample1_R1.fastq",
+          "why": "计算reads数量（总行数/4）"
+        },
+        {
+          "step": 5,
+          "action": "记录到日志",
+          "command": "ls -lh raw_data/ > data_received.log",
+          "why": "留存记录，方便后续追溯"
+        }
+      ],
+      "deliverable": "完成数据整理，向主管汇报数据接收情况（模拟邮件）"
+    },
+    "industry_practices": {
+      "naming_convention": {
+        "rule": "样本名_条件_重复_方向.fastq",
+        "example": "sample1_control_rep1_R1.fastq",
+        "why": "标准化命名便于批量处理和避免错误"
+      },
+      "directory_structure": {
+        "standard": "raw_data/ clean_data/ results/ scripts/ docs/",
+        "why": "行业通用结构，便于团队协作和代码复用"
+      },
+      "documentation": {
+        "requirement": "每个项目必须有README.md",
+        "content": "项目背景、数据来源、分析流程、结果说明",
+        "why": "3个月后你会忘记细节，文档是最好的记忆"
+      }
+    },
+    "role_play": {
+      "role": "实习生",
+      "supervisor": "AI导师（模拟主管）",
+      "evaluation_criteria": [
+        "任务完成度（是否按时完成）",
+        "代码规范性（命令是否正确）",
+        "文档完整性（是否记录过程）",
+        "沟通能力（汇报是否清晰）"
+      ]
+    }
+  },
+
+  "tasks": [
+    {
+      "id": "w1t1",
+      "type": "setup",
+      "cognitive_level": "apply",
+      "desc": "安装Linux环境（WSL2或虚拟机）",
+      "context": "真实工作中，你需要在自己电脑上配置开发环境",
+      "success_criteria": "能够打开终端并执行命令",
+      "time_estimate": "1-2小时",
+      "collaboration": "可以向同学或导师求助"
+    },
+    {
+      "id": "w1t2",
+      "type": "practice",
+      "cognitive_level": "apply",
+      "desc": "完成20个基础命令练习",
+      "context": "模拟日常工作中的文件操作场景",
+      "success_criteria": "不看文档能完成80%的操作",
+      "time_estimate": "2-3小时",
+      "collaboration": "结对练习，互相出题"
+    },
+    {
+      "id": "w1t3",
+      "type": "project",
+      "cognitive_level": "create",
+      "desc": "完成'测序数据接收'场景任务",
+      "context": "模拟真实工作场景",
+      "success_criteria": "完成所有步骤并撰写汇报邮件",
+      "time_estimate": "1-2小时",
+      "collaboration": "完成后请同学review你的目录结构"
+    },
+    {
+      "id": "w1t4",
+      "type": "output",
+      "cognitive_level": "understand",
+      "desc": "写学习笔记：《Linux基础命令速查表》",
+      "context": "建立个人知识库，方便后续查阅",
+      "success_criteria": "包含至少20个命令，每个有示例和说明",
+      "time_estimate": "1小时",
+      "collaboration": "分享到学习群，互相参考"
+    },
+    {
+      "id": "w1t5",
+      "type": "reflection",
+      "cognitive_level": "evaluate",
+      "desc": "完成本周学习反思",
+      "context": "培养元认知能力",
+      "success_criteria": "回答4个反思问题，每个至少50字",
+      "time_estimate": "15分钟",
+      "collaboration": "可选：在小组会上分享"
+    }
+  ],
+
+  "resources": {
+    "must_read": [
+      {"name": "Linux基础命令教程", "url": "https://www.runoob.com/linux/linux-command-manual.html", "time": "2小时"}
+    ],
+    "recommended": [
+      {"name": "生信技能树Linux合集", "url": "https://www.bilibili.com/video/BV1o4411q7AQ/", "time": "3小时"}
+    ],
+    "tools": [
+      {"name": "命令速查卡片", "file": "templates/linux_cheatsheet.md"},
+      {"name": "练习题集", "file": "data/week1_exercises.md"}
+    ]
+  },
+
+  "assessment": {
+    "self_check": {
+      "questions": [
+        "我能独立完成文件的创建、移动、删除吗？",
+        "我理解绝对路径和相对路径的区别吗？",
+        "我知道如何查看命令的帮助文档吗？",
+        "我能用管道符组合多个命令吗？"
+      ],
+      "passing_score": "4/4"
+    },
+    "practical_test": {
+      "scenario": "给定一个混乱的数据目录，要求整理成规范结构",
+      "time_limit": "30分钟",
+      "evaluation": "由同学或导师评分"
+    }
+  },
+
+  "gamification": {
+    "exp_rewards": {
+      "complete_all_tasks": 150,
+      "help_others": 20,
+      "share_tips": 10,
+      "perfect_score": 50
+    },
+    "achievements": [
+      {"name": "Linux新手", "condition": "完成所有基础命令练习"},
+      {"name": "助人为乐", "condition": "帮助3位同学解决问题"},
+      {"name": "知识分享者", "condition": "分享笔记获得5个赞"}
+    ]
+  }
+}

@@ -1,0 +1,87 @@
+{
+  "templates": {
+    "rna_seq_pipeline": {
+      "name": "RNA-seq分析流程",
+      "files": [
+        {
+          "path": "scripts/01_qc.sh",
+          "language": "bash",
+          "content": "#!/bin/bash\n# RNA-seq质量控制流程\n# 作者: {{AUTHOR}}\n# 日期: {{DATE}}\n\nset -e\n\n# 参数设置\nTHREADS=4\nINPUT_DIR=\"data/raw\"\nOUTPUT_DIR=\"results/01_qc\"\n\nmkdir -p $OUTPUT_DIR\n\necho \"=== 开始质量控制 ===\"\n\n# FastQC质控\necho \"运行FastQC...\"\nfastqc -t $THREADS -o $OUTPUT_DIR $INPUT_DIR/*.fastq.gz\n\n# MultiQC汇总\necho \"生成MultiQC报告...\"\nmultiqc $OUTPUT_DIR -o $OUTPUT_DIR\n\necho \"=== 质量控制完成 ===\"\necho \"报告位置: $OUTPUT_DIR/multiqc_report.html\""
+        },
+        {
+          "path": "scripts/02_trim.sh",
+          "language": "bash",
+          "content": "#!/bin/bash\n# RNA-seq数据修剪流程\n\nset -e\n\nTHREADS=4\nINPUT_DIR=\"data/raw\"\nOUTPUT_DIR=\"results/02_clean\"\nADAPTER=\"TruSeq3-PE.fa\"\n\nmkdir -p $OUTPUT_DIR\n\necho \"=== 开始数据修剪 ===\"\n\n# Trimmomatic修剪\nfor sample in $INPUT_DIR/*_R1.fastq.gz; do\n    base=$(basename $sample _R1.fastq.gz)\n    echo \"处理样本: $base\"\n    \n    trimmomatic PE -threads $THREADS \\\n        $INPUT_DIR/${base}_R1.fastq.gz $INPUT_DIR/${base}_R2.fastq.gz \\\n        $OUTPUT_DIR/${base}_R1.clean.fastq.gz $OUTPUT_DIR/${base}_R1.unpair.fastq.gz \\\n        $OUTPUT_DIR/${base}_R2.clean.fastq.gz $OUTPUT_DIR/${base}_R2.unpair.fastq.gz \\\n        ILLUMINACLIP:$ADAPTER:2:30:10 \\\n        LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:36\ndone\n\necho \"=== 数据修剪完成 ===\""
+        },
+        {
+          "path": "scripts/03_align.sh",
+          "language": "bash",
+          "content": "#!/bin/bash\n# RNA-seq比对流程 (HISAT2)\n\nset -e\n\nTHREADS=8\nGENOME_INDEX=\"reference/hisat2_index/genome\"\nINPUT_DIR=\"results/02_clean\"\nOUTPUT_DIR=\"results/03_alignment\"\n\nmkdir -p $OUTPUT_DIR\n\necho \"=== 开始序列比对 ===\"\n\nfor sample in $INPUT_DIR/*_R1.clean.fastq.gz; do\n    base=$(basename $sample _R1.clean.fastq.gz)\n    echo \"比对样本: $base\"\n    \n    hisat2 -x $GENOME_INDEX \\\n        -1 $INPUT_DIR/${base}_R1.clean.fastq.gz \\\n        -2 $INPUT_DIR/${base}_R2.clean.fastq.gz \\\n        -S $OUTPUT_DIR/${base}.sam \\\n        --new-summary -p $THREADS 2> $OUTPUT_DIR/${base}_align.log\n    \n    # SAM转BAM并排序\n    samtools view -bS $OUTPUT_DIR/${base}.sam | \\\n        samtools sort -o $OUTPUT_DIR/${base}.sorted.bam\n    samtools index $OUTPUT_DIR/${base}.sorted.bam\n    \n    # 统计比对率\n    samtools flagstat $OUTPUT_DIR/${base}.sorted.bam > $OUTPUT_DIR/${base}_flagstat.txt\n    \n    # 删除SAM文件节省空间\n    rm $OUTPUT_DIR/${base}.sam\ndone\n\necho \"=== 序列比对完成 ===\""
+        },
+        {
+          "path": "scripts/04_quantify.sh",
+          "language": "bash",
+          "content": "#!/bin/bash\n# RNA-seq定量流程 (featureCounts)\n\nset -e\n\nTHREADS=4\nGTF=\"reference/annotation.gtf\"\nINPUT_DIR=\"results/03_alignment\"\nOUTPUT_DIR=\"results/04_quantification\"\n\nmkdir -p $OUTPUT_DIR\n\necho \"=== 开始基因定量 ===\"\n\n# featureCounts定量\nfeatureCounts -T $THREADS \\\n    -a $GTF \\\n    -o $OUTPUT_DIR/gene_counts.txt \\\n    -g gene_id \\\n    $INPUT_DIR/*.sorted.bam\n\necho \"=== 基因定量完成 ===\"\necho \"计数文件: $OUTPUT_DIR/gene_counts.txt\""
+        }
+      ]
+    },
+    "deg_analysis": {
+      "name": "差异表达分析",
+      "files": [
+        {
+          "path": "scripts/deg_analysis.R",
+          "language": "r",
+          "content": "# 差异表达分析脚本 (DESeq2)\n# 作者: {{AUTHOR}}\n# 日期: {{DATE}}\n\nlibrary(DESeq2)\nlibrary(tidyverse)\nlibrary(ggplot2)\nlibrary(pheatmap)\nlibrary(EnhancedVolcano)\n\n# ========== 参数设置 ==========\nCOUNTS_FILE <- \"results/04_quantification/gene_counts.txt\"\nMETADATA_FILE <- \"data/metadata.csv\"\nOUTPUT_DIR <- \"results/05_deg\"\nCONTRAST <- c(\"group\", \"treatment\", \"control\")\nPADJ_CUTOFF <- 0.05\nLFC_CUTOFF <- 1\n\n# ========== 读取数据 ==========\ncat(\"读取数据...\\n\")\n\n# 读取count矩阵\ncounts <- read.table(COUNTS_FILE, header = TRUE, row.names = 1, comment.char = \"#\")\ncounts <- counts[, 6:ncol(counts)]  # 移除featureCounts的注释列\n\n# 读取metadata\nmetadata <- read.csv(METADATA_FILE, row.names = 1)\n\n# 确保样本顺序一致\ncounts <- counts[, rownames(metadata)]\n\n# ========== 创建DESeq对象 ==========\ncat(\"创建DESeq对象...\\n\")\n\ndds <- DESeqDataSetFromMatrix(\n  countData = counts,\n  colData = metadata,\n  design = ~ group\n)\n\n# 过滤低表达基因\nkeep <- rowSums(counts(dds) >= 10) >= 3\ndds <- dds[keep, ]\n\n# ========== 差异分析 ==========\ncat(\"运行差异分析...\\n\")\n\ndds <- DESeq(dds)\nres <- results(dds, contrast = CONTRAST)\n\n# 排序\nres <- res[order(res$padj), ]\n\n# ========== 筛选显著基因 ==========\ncat(\"筛选差异基因...\\n\")\n\nres_sig <- res %>%\n  as.data.frame() %>%\n  filter(padj < PADJ_CUTOFF, abs(log2FoldChange) > LFC_CUTOFF)\n\ncat(sprintf(\"发现 %d 个显著差异基因\\n\", nrow(res_sig)))\n\n# ========== 保存结果 ==========\ndir.create(OUTPUT_DIR, showWarnings = FALSE)\n\n# 保存所有结果\nwrite.csv(as.data.frame(res), file.path(OUTPUT_DIR, \"all_genes.csv\"))\n\n# 保存显著基因\nwrite.csv(res_sig, file.path(OUTPUT_DIR, \"deg_genes.csv\"))\n\n# ========== 可视化 ==========\ncat(\"生成图表...\\n\")\n\n# 1. 火山图\npng(file.path(OUTPUT_DIR, \"volcano.png\"), width = 3000, height = 3000, res = 300)\nEnhancedVolcano(res,\n    lab = rownames(res),\n    x = 'log2FoldChange',\n    y = 'padj',\n    pCutoff = PADJ_CUTOFF,\n    FCcutoff = LFC_CUTOFF,\n    title = 'Differentially Expressed Genes')\ndev.off()\n\n# 2. PCA图\nvsd <- vst(dds, blind = FALSE)\npng(file.path(OUTPUT_DIR, \"pca.png\"), width = 3000, height = 3000, res = 300)\nplotPCA(vsd, intgroup = \"group\") + theme_bw()\ndev.off()\n\n# 3. 热图\ntop_genes <- head(rownames(res_sig), 50)\nmat <- assay(vsd)[top_genes, ]\nmat <- mat - rowMeans(mat)\n\npng(file.path(OUTPUT_DIR, \"heatmap.png\"), width = 4000, height = 5000, res = 300)\npheatmap(mat, \n         annotation_col = metadata,\n         show_rownames = TRUE,\n         cluster_rows = TRUE,\n         cluster_cols = TRUE)\ndev.off()\n\ncat(\"分析完成! 结果保存在:\", OUTPUT_DIR, \"\\n\")"
+        }
+      ]
+    },
+    "wes_pipeline": {
+      "name": "WES变异检测流程",
+      "files": [
+        {
+          "path": "scripts/wes_variant_calling.sh",
+          "language": "bash",
+          "content": "#!/bin/bash\n# WES变异检测流程 (GATK)\n# 作者: {{AUTHOR}}\n# 日期: {{DATE}}\n\nset -e\n\n# ========== 参数设置 ==========\nTHREADS=8\nREF_GENOME=\"reference/genome.fa\"\nKNOWN_SITES=\"reference/dbsnp.vcf\"\nINPUT_DIR=\"data/raw\"\nOUTPUT_DIR=\"results\"\nSAMPLE_NAME=\"sample1\"\n\nmkdir -p $OUTPUT_DIR\n\n# ========== 1. 比对 ==========\necho \"=== 步骤1: BWA比对 ===\"\n\nbwa mem -t $THREADS \\\n    -R \"@RG\\tID:${SAMPLE_NAME}\\tSM:${SAMPLE_NAME}\\tPL:ILLUMINA\" \\\n    $REF_GENOME \\\n    $INPUT_DIR/${SAMPLE_NAME}_R1.fastq.gz \\\n    $INPUT_DIR/${SAMPLE_NAME}_R2.fastq.gz | \\\n    samtools sort -o $OUTPUT_DIR/${SAMPLE_NAME}.sorted.bam\n\nsamtools index $OUTPUT_DIR/${SAMPLE_NAME}.sorted.bam\n\n# ========== 2. 标记重复 ==========\necho \"=== 步骤2: 标记重复 ===\"\n\ngatk MarkDuplicates \\\n    -I $OUTPUT_DIR/${SAMPLE_NAME}.sorted.bam \\\n    -O $OUTPUT_DIR/${SAMPLE_NAME}.dedup.bam \\\n    -M $OUTPUT_DIR/${SAMPLE_NAME}_metrics.txt\n\nsamtools index $OUTPUT_DIR/${SAMPLE_NAME}.dedup.bam\n\n# ========== 3. BQSR ==========\necho \"=== 步骤3: BQSR ===\"\n\ngatk BaseRecalibrator \\\n    -I $OUTPUT_DIR/${SAMPLE_NAME}.dedup.bam \\\n    -R $REF_GENOME \\\n    --known-sites $KNOWN_SITES \\\n    -O $OUTPUT_DIR/${SAMPLE_NAME}_recal.table\n\ngatk ApplyBQSR \\\n    -I $OUTPUT_DIR/${SAMPLE_NAME}.dedup.bam \\\n    -R $REF_GENOME \\\n    --bqsr-recal-file $OUTPUT_DIR/${SAMPLE_NAME}_recal.table \\\n    -O $OUTPUT_DIR/${SAMPLE_NAME}.recal.bam\n\nsamtools index $OUTPUT_DIR/${SAMPLE_NAME}.recal.bam\n\n# ========== 4. 变异检测 ==========\necho \"=== 步骤4: HaplotypeCaller ===\"\n\ngatk HaplotypeCaller \\\n    -R $REF_GENOME \\\n    -I $OUTPUT_DIR/${SAMPLE_NAME}.recal.bam \\\n    -O $OUTPUT_DIR/${SAMPLE_NAME}_raw_variants.vcf\n\n# ========== 5. 变异过滤 ==========\necho \"=== 步骤5: 变异过滤 ===\"\n\n# SNP过滤\ngatk VariantFiltration \\\n    -R $REF_GENOME \\\n    -V $OUTPUT_DIR/${SAMPLE_NAME}_raw_variants.vcf \\\n    --filter-expression \"QD < 2.0 || MQ < 40.0 || FS > 60.0 || SOR > 3.0\" \\\n    --filter-name \"SNP_FILTER\" \\\n    -O $OUTPUT_DIR/${SAMPLE_NAME}_filtered.vcf\n\n# 提取PASS变异\nbcftools view -f PASS $OUTPUT_DIR/${SAMPLE_NAME}_filtered.vcf \\\n    -o $OUTPUT_DIR/${SAMPLE_NAME}_variants_pass.vcf\n\necho \"=== 变异检测完成 ===\"\necho \"结果文件: $OUTPUT_DIR/${SAMPLE_NAME}_variants_pass.vcf\""
+        }
+      ]
+    },
+    "scrna_analysis": {
+      "name": "单细胞RNA-seq分析",
+      "files": [
+        {
+          "path": "scripts/scrna_analysis.R",
+          "language": "r",
+          "content": "# 单细胞RNA-seq分析脚本 (Seurat v5)\n# 作者: {{AUTHOR}}\n# 日期: {{DATE}}\n\nlibrary(Seurat)\nlibrary(tidyverse)\nlibrary(ggplot2)\nlibrary(patchwork)\n\n# ========== 参数设置 ==========\nDATA_DIR <- \"data/raw\"\nOUTPUT_DIR <- \"results\"\nMIN_FEATURES <- 200\nMAX_FEATURES <- 2500\nMAX_MT_PERCENT <- 5\nN_VARIABLE_FEATURES <- 2000\nN_PCS <- 30\nRESOLUTION <- 0.5\n\n# ========== 创建输出目录 ==========\ndir.create(OUTPUT_DIR, showWarnings = FALSE)\n\n# ========== 读取数据 ==========\ncat(\"读取数据...\\n\")\n\n# 10x数据\npbmc <- Read10X(data.dir = DATA_DIR)\nseurat_obj <- CreateSeuratObject(counts = pbmc, project = \"scRNA\")\n\n# ========== 质量控制 ==========\ncat(\"质量控制...\\n\")\n\n# 计算线粒体比例\nseurat_obj[[\"percent.mt\"]] <- PercentageFeatureSet(seurat_obj, pattern = \"^MT-\")\n\n# 可视化QC指标\npng(file.path(OUTPUT_DIR, \"qc_violin.png\"), width = 4000, height = 2000, res = 300)\nVlnPlot(seurat_obj, \n        features = c(\"nFeature_RNA\", \"nCount_RNA\", \"percent.mt\"),\n        ncol = 3)\ndev.off()\n\n# 过滤\nseurat_obj <- subset(seurat_obj, \n                     subset = nFeature_RNA > MIN_FEATURES & \n                              nFeature_RNA < MAX_FEATURES & \n                              percent.mt < MAX_MT_PERCENT)\n\ncat(sprintf(\"过滤后细胞数: %d\\n\", ncol(seurat_obj)))\n\n# ========== 标准化 ==========\ncat(\"标准化...\\n\")\n\nseurat_obj <- NormalizeData(seurat_obj)\nseurat_obj <- FindVariableFeatures(seurat_obj, nfeatures = N_VARIABLE_FEATURES)\nseurat_obj <- ScaleData(seurat_obj)\n\n# ========== 降维 ==========\ncat(\"降维...\\n\")\n\nseurat_obj <- RunPCA(seurat_obj, npcs = 50)\n\n# ElbowPlot选择PC数量\npng(file.path(OUTPUT_DIR, \"elbow_plot.png\"), width = 3000, height = 2000, res = 300)\nElbowPlot(seurat_obj, ndims = 50)\ndev.off()\n\nseurat_obj <- RunUMAP(seurat_obj, dims = 1:N_PCS)\nseurat_obj <- RunTSNE(seurat_obj, dims = 1:N_PCS)\n\n# ========== 聚类 ==========\ncat(\"聚类...\\n\")\n\nseurat_obj <- FindNeighbors(seurat_obj, dims = 1:N_PCS)\nseurat_obj <- FindClusters(seurat_obj, resolution = RESOLUTION)\n\n# ========== 可视化 ==========\ncat(\"可视化...\\n\")\n\n# UMAP\npng(file.path(OUTPUT_DIR, \"umap_clusters.png\"), width = 3000, height = 3000, res = 300)\nDimPlot(seurat_obj, reduction = \"umap\", label = TRUE) + NoLegend()\ndev.off()\n\n# ========== Marker基因 ==========\ncat(\"鉴定Marker基因...\\n\")\n\nmarkers <- FindAllMarkers(seurat_obj, \n                          only.pos = TRUE, \n                          min.pct = 0.25,\n                          logfc.threshold = 0.25)\n\ntop_markers <- markers %>% \n  group_by(cluster) %>% \n  top_n(10, avg_log2FC)\n\nwrite.csv(markers, file.path(OUTPUT_DIR, \"all_markers.csv\"))\nwrite.csv(top_markers, file.path(OUTPUT_DIR, \"top_markers.csv\"))\n\n# 热图\npng(file.path(OUTPUT_DIR, \"marker_heatmap.png\"), width = 5000, height = 4000, res = 300)\nDoHeatmap(seurat_obj, features = top_markers$gene, size = 3) + NoLegend()\ndev.off()\n\n# ========== 保存对象 ==========\nsaveRDS(seurat_obj, file.path(OUTPUT_DIR, \"seurat_object.rds\"))\n\ncat(\"分析完成! 结果保存在:\", OUTPUT_DIR, \"\\n\")"
+        }
+      ]
+    },
+    "geo_mining": {
+      "name": "GEO数据挖掘",
+      "files": [
+        {
+          "path": "scripts/geo_analysis.R",
+          "language": "r",
+          "content": "# GEO数据挖掘脚本\n# 作者: {{AUTHOR}}\n# 日期: {{DATE}}\n\nlibrary(GEOquery)\nlibrary(limma)\nlibrary(tidyverse)\nlibrary(ggplot2)\nlibrary(clusterProfiler)\nlibrary(org.Hs.eg.db)\n\n# ========== 参数设置 ==========\nGSE_ID <- \"GSE12345\"  # 替换为目标GSE编号\nOUTPUT_DIR <- \"results\"\nGROUP_PATTERN <- c(\"tumor\" = \"tumor\", \"normal\" = \"normal\")  # 样本分组模式\n\ndir.create(OUTPUT_DIR, showWarnings = FALSE)\n\n# ========== 下载GEO数据 ==========\ncat(\"下载GEO数据:\", GSE_ID, \"\\n\")\n\ngset <- getGEO(GSE_ID, GSEMatrix = TRUE, getGPL = FALSE)\nexpr <- exprs(gset[[1]])\npdata <- pData(gset[[1]])\n\ncat(sprintf(\"数据维度: %d 基因 x %d 样本\\n\", nrow(expr), ncol(expr)))\n\n# ========== 样本分组 ==========\ncat(\"样本分组...\\n\")\n\n# 根据样本名称分组（根据实际情况调整）\ngroup <- ifelse(grepl(\"tumor|cancer|T\", pdata$title, ignore.case = TRUE), \n                \"tumor\", \"normal\")\ngroup <- factor(group, levels = c(\"normal\", \"tumor\"))\n\n# ========== 差异分析 ==========\ncat(\"差异分析...\\n\")\n\ndesign <- model.matrix(~0 + group)\ncolnames(design) <- c(\"normal\", \"tumor\")\n\nfit <- lmFit(expr, design)\ncontrast <- makeContrasts(tumor - normal, levels = design)\nfit2 <- contrasts.fit(fit, contrast)\nfit2 <- eBayes(fit2)\n\n# 获取差异基因\ndiff_genes <- topTable(fit2, number = Inf, p.value = 0.05, lfc = 1)\ndiff_genes <- diff_genes[order(diff_genes$logFC), ]\n\ncat(sprintf(\"发现 %d 个差异基因\\n\", nrow(diff_genes)))\n\nwrite.csv(diff_genes, file.path(OUTPUT_DIR, \"diff_genes.csv\"))\n\n# ========== 富集分析 ==========\ncat(\"富集分析...\\n\")\n\n# 转换基因ID\ngene_symbols <- rownames(diff_genes)\ngene_entrez <- bitr(gene_symbols, \n                    fromType = \"SYMBOL\", \n                    toType = \"ENTREZID\", \n                    OrgDb = org.Hs.eg.db)\n\n# GO富集\ngo_enrich <- enrichGO(gene = gene_entrez$ENTREZID,\n                      OrgDb = org.Hs.eg.db,\n                      ont = \"BP\",\n                      pAdjustMethod = \"BH\",\n                      pvalueCutoff = 0.05,\n                      qvalueCutoff = 0.05)\n\n# KEGG富集\nkegg_enrich <- enrichKEGG(gene = gene_entrez$ENTREZID,\n                          organism = \"hsa\",\n                          pvalueCutoff = 0.05)\n\n# 保存富集结果\nwrite.csv(as.data.frame(go_enrich), file.path(OUTPUT_DIR, \"go_enrichment.csv\"))\nwrite.csv(as.data.frame(kegg_enrich), file.path(OUTPUT_DIR, \"kegg_enrichment.csv\"))\n\n# 可视化\npng(file.path(OUTPUT_DIR, \"go_dotplot.png\"), width = 4000, height = 4000, res = 300)\ndotplot(go_enrich, showCategory = 20) + ggtitle(\"GO Enrichment\")\ndev.off()\n\ncat(\"分析完成! 结果保存在:\", OUTPUT_DIR, \"\\n\")"
+        }
+      ]
+    }
+  },
+  "project_structure": {
+    "rna_seq": {
+      "dirs": ["data/raw", "data/processed", "scripts", "results/figures", "results/tables", "notes"],
+      "env_name": "rna_seq"
+    },
+    "wes": {
+      "dirs": ["data/raw", "reference", "scripts", "results", "notes"],
+      "env_name": "wes"
+    },
+    "scrna": {
+      "dirs": ["data/raw", "scripts", "results/figures", "results/tables", "notes"],
+      "env_name": "scrna"
+    },
+    "general": {
+      "dirs": ["data", "scripts", "results", "notes"],
+      "env_name": "bioinfo"
+    }
+  }
+}

@@ -1,0 +1,137 @@
+{
+  "weeks": [
+    {
+      "week": 9,
+      "title": "RNA-seq差异表达分析（上）",
+      "difficulty": "★★★☆☆",
+      "biological_context": {
+        "why": "差异表达分析是RNA-seq的核心目标，找出处理组vs对照组的差异基因",
+        "real_scenario": "药物筛选、疾病机制研究、生物标志物发现都需要差异分析",
+        "industry_standard": "DESeq2是最权威的差异分析工具，被引用10000+次"
+      },
+      "cognitive_dimension": {
+        "bloom_levels": {
+          "remember": ["列出差异分析的主要步骤", "说出FDR和p-value的区别"],
+          "understand": ["解释标准化的必要性", "说明负二项分布的原理"],
+          "apply": ["创建DESeq对象并运行分析", "筛选显著差异基因"],
+          "analyze": ["比较DESeq2、edgeR、limma的差异", "分析批次效应的影响"],
+          "evaluate": ["评估差异分析结果的可靠性"],
+          "create": ["设计复杂实验设计的分析方案"]
+        },
+        "learning_strategy": "理论+实践结合",
+        "metacognition": ["我理解统计原理吗？", "我能解释结果吗？", "我知道如何选择阈值吗？"]
+      },
+      "collaborative_dimension": {
+        "peer_learning": "小组讨论：如何选择差异基因的阈值",
+        "code_review": "互相检查分析流程的正确性",
+        "community": "分享差异分析的常见问题"
+      },
+      "contextual_dimension": {
+        "real_scenario": {
+          "title": "场景：药物处理的差异基因分析",
+          "background": "制药公司需要分析新药处理后的基因表达变化（3个对照 vs 3个处理）",
+          "tasks": [
+            "准备count矩阵和样本信息表",
+            "创建DESeq2对象",
+            "运行差异分析",
+            "筛选显著差异基因（padj<0.05, |log2FC|>1）",
+            "输出差异基因列表和统计报告"
+          ]
+        },
+        "role": "初级分析师",
+        "industry_practice": "必须报告：样本数、总基因数、差异基因数、上调/下调比例"
+      }
+    },
+    {
+      "week": 10,
+      "title": "RNA-seq差异表达分析（下）",
+      "difficulty": "★★★☆☆",
+      "biological_context": {
+        "why": "可视化是展示差异分析结果的关键，帮助理解生物学意义",
+        "real_scenario": "论文发表、项目汇报都需要专业的可视化图表",
+        "industry_standard": "火山图、热图、PCA图是差异分析的标准三件套"
+      },
+      "cognitive_dimension": {
+        "bloom_levels": {
+          "understand": ["解释火山图的含义", "说明PCA的作用"],
+          "apply": ["绘制火山图、热图、PCA图"],
+          "analyze": ["从PCA图判断样本分组质量"],
+          "evaluate": ["评估可视化的专业性"],
+          "create": ["设计多面板组合图"]
+        }
+      },
+      "contextual_dimension": {
+        "real_scenario": {
+          "title": "场景：准备项目汇报PPT",
+          "background": "需要向项目经理汇报差异分析结果",
+          "tasks": [
+            "绘制火山图（标注Top10基因）",
+            "绘制Top50差异基因热图",
+            "绘制PCA图（展示样本分组）",
+            "编写R Markdown报告",
+            "导出高分辨率图片用于PPT"
+          ]
+        },
+        "role": "初级分析师"
+      }
+    },
+    {
+      "week": 11,
+      "title": "WES变异检测（上）",
+      "difficulty": "★★★★☆",
+      "biological_context": {
+        "why": "WES用于检测疾病相关的遗传变异，是精准医疗的基础",
+        "real_scenario": "肿瘤突变检测、遗传病诊断、药物基因组学",
+        "industry_standard": "GATK Best Practices是变异检测的金标准"
+      },
+      "cognitive_dimension": {
+        "bloom_levels": {
+          "remember": ["列出GATK流程的主要步骤", "说出VCF格式的结构"],
+          "understand": ["解释BQSR的原理", "说明变异检测的统计方法"],
+          "apply": ["运行GATK流程", "标记重复reads"],
+          "analyze": ["分析比对质量", "比较不同变异检测工具"],
+          "evaluate": ["评估变异检测的准确性"]
+        }
+      },
+      "contextual_dimension": {
+        "real_scenario": {
+          "title": "场景：肿瘤样本的变异检测",
+          "background": "医院送来肿瘤样本的WES数据，需要检测体细胞突变",
+          "tasks": [
+            "比对到参考基因组（BWA）",
+            "标记重复reads（MarkDuplicates）",
+            "碱基质量校正（BQSR）",
+            "准备下一步的变异检测"
+          ]
+        },
+        "role": "初级分析师"
+      }
+    },
+    {
+      "week": 12,
+      "title": "WES变异检测（下）",
+      "difficulty": "★★★★☆",
+      "cognitive_dimension": {
+        "bloom_levels": {
+          "apply": ["运行HaplotypeCaller", "过滤变异", "注释变异"],
+          "analyze": ["分析变异的功能影响"],
+          "evaluate": ["评估变异的致病性"],
+          "create": ["开发自动化变异检测流程"]
+        }
+      },
+      "contextual_dimension": {
+        "real_scenario": {
+          "title": "场景：完成变异检测报告",
+          "tasks": [
+            "变异检测（HaplotypeCaller）",
+            "变异过滤（VQSR或硬过滤）",
+            "变异注释（SnpEff/ANNOVAR）",
+            "筛选高影响变异",
+            "生成变异统计报告"
+          ]
+        },
+        "role": "初级分析师"
+      }
+    }
+  ]
+}

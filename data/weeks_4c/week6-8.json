@@ -1,0 +1,131 @@
+{
+  "weeks": [
+    {
+      "week": 6,
+      "title": "Python数据分析（Pandas + Numpy）",
+      "difficulty": "★★☆☆☆",
+      "biological_context": {
+        "why": "生信数据通常是大型矩阵（表达矩阵、变异表等），Pandas是处理表格数据的最佳工具",
+        "real_scenario": "处理基因表达矩阵、变异注释表、样本临床信息表",
+        "industry_standard": "Pandas + Numpy是Python数据分析的标准组合"
+      },
+      "cognitive_dimension": {
+        "bloom_levels": {
+          "remember": ["列出Pandas的核心数据结构", "说出DataFrame的索引方式"],
+          "understand": ["解释数据合并的原理", "说明数据透视的作用"],
+          "apply": ["读取和处理表达矩阵", "合并表达数据和临床信息"],
+          "analyze": ["比较不同数据合并方式", "分析数据处理的性能"],
+          "create": ["开发表达矩阵标准化工具"]
+        },
+        "learning_strategy": "案例驱动 + 文档查阅",
+        "metacognition": ["我能快速处理大型数据表吗？", "我理解数据合并的逻辑吗？"]
+      },
+      "collaborative_dimension": {
+        "peer_learning": "小组讨论：分享数据处理的最佳实践",
+        "code_review": "互相检查数据处理的正确性",
+        "community": "分享一个Pandas技巧"
+      },
+      "contextual_dimension": {
+        "real_scenario": {
+          "title": "场景：整合多组学数据",
+          "background": "有表达数据、突变数据、临床数据三个表，需要整合分析",
+          "tasks": [
+            "读取三个CSV文件",
+            "按样本ID合并数据",
+            "筛选有完整数据的样本",
+            "计算每组的统计量",
+            "输出整合后的数据表"
+          ]
+        },
+        "role": "实习生",
+        "industry_practice": "数据处理必须记录每一步操作，确保可重复"
+      }
+    },
+    {
+      "week": 7,
+      "title": "Conda环境管理 + 生信工具安装",
+      "difficulty": "★★☆☆☆",
+      "biological_context": {
+        "why": "生信工具依赖复杂，版本冲突频繁，Conda是解决依赖地狱的标准方案",
+        "real_scenario": "一个项目可能需要10+个工具，每个工具有不同的依赖",
+        "industry_standard": "Bioconda提供8000+生信工具，一键安装"
+      },
+      "cognitive_dimension": {
+        "bloom_levels": {
+          "remember": ["列出Conda的基本命令", "说出环境隔离的好处"],
+          "understand": ["解释Conda环境的原理", "说明Bioconda的作用"],
+          "apply": ["创建生信分析环境", "安装常用生信工具"],
+          "analyze": ["比较Conda和Docker", "分析工具版本兼容性"],
+          "create": ["编写environment.yml配置文件"]
+        },
+        "learning_strategy": "实践为主 + 问题解决",
+        "metacognition": ["我能独立配置环境吗？", "遇到依赖冲突我知道如何解决吗？"]
+      },
+      "collaborative_dimension": {
+        "peer_learning": "互相帮助解决环境配置问题",
+        "code_review": "分享各自的environment.yml配置",
+        "community": "整理常见环境问题FAQ"
+      },
+      "contextual_dimension": {
+        "real_scenario": {
+          "title": "场景：配置RNA-seq分析环境",
+          "background": "新项目需要配置完整的RNA-seq分析环境",
+          "tasks": [
+            "创建独立的conda环境",
+            "安装质控工具（fastqc, multiqc）",
+            "安装比对工具（hisat2, star）",
+            "安装定量工具（featureCounts, salmon）",
+            "安装R和DESeq2",
+            "导出environment.yml供团队使用"
+          ]
+        },
+        "role": "实习生",
+        "industry_practice": "每个项目必须有独立环境，避免版本冲突"
+      }
+    },
+    {
+      "week": 8,
+      "title": "项目1 - RNA-seq数据质控与比对",
+      "difficulty": "★★★☆☆",
+      "biological_context": {
+        "why": "RNA-seq是最常用的转录组测序技术，质控和比对是分析的第一步",
+        "real_scenario": "公司90%的项目都涉及RNA-seq分析",
+        "industry_standard": "FastQC质控 + HISAT2/STAR比对是行业标准流程"
+      },
+      "cognitive_dimension": {
+        "bloom_levels": {
+          "remember": ["列出RNA-seq分析的主要步骤", "说出FASTQ格式的结构"],
+          "understand": ["解释Phred质量分数", "说明比对率的意义"],
+          "apply": ["运行FastQC质控", "用HISAT2进行比对"],
+          "analyze": ["分析质控报告，判断数据质量", "比较不同比对工具的结果"],
+          "evaluate": ["评估比对质量，决定是否重新分析"],
+          "create": ["开发自动化RNA-seq前处理流程"]
+        },
+        "learning_strategy": "项目驱动 + 完整流程",
+        "metacognition": ["我理解每个步骤的意义吗？", "我能独立完成整个流程吗？", "我的流程够自动化吗？"]
+      },
+      "collaborative_dimension": {
+        "peer_learning": "小组项目：分工完成不同样本的处理",
+        "code_review": "互相review流程脚本的规范性",
+        "community": "分享项目经验和遇到的坑"
+      },
+      "contextual_dimension": {
+        "real_scenario": {
+          "title": "场景：处理客户的RNA-seq数据",
+          "background": "客户发来10个样本的RNA-seq数据，需要完成质控和比对",
+          "deadline": "3天内交付质控报告和比对结果",
+          "tasks": [
+            "Day 1: 数据接收、质控（FastQC + MultiQC）",
+            "Day 2: 去接头、质量过滤（Trimmomatic）",
+            "Day 2-3: 比对到参考基因组（HISAT2）",
+            "Day 3: 生成比对统计报告",
+            "Day 3: 编写分析报告（包含质控图表、比对率统计）"
+          ],
+          "deliverable": "完整的GitHub项目 + 分析报告PDF"
+        },
+        "role": "实习生",
+        "industry_practice": "流程必须脚本化、可重复、有日志记录"
+      }
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+name: bioinfo
+channels:
+  - bioconda
+  - conda-forge
+  - defaults
+dependencies:
+  # Python基础
+  - python=3.11
+  - pip
+
+  # 生信核心工具
+  - fastqc
+  - multiqc
+  - trimmomatic
+  - cutadapt
+  - bwa
+  - samtools
+  - bcftools
+  - bedtools
+  - hisat2
+  - star
+  - subread  # featureCounts
+  - htseq
+  - macs2
+  - bowtie2
+
+  # Python数据处理
+  - numpy
+  - pandas
+  - scipy
+  - matplotlib
+  - seaborn
+  - biopython
+  - pysam
+
+  # R基础
+  - r-base=4.3
+  - r-tidyverse
+  - r-ggplot2
+  - r-pheatmap
+  - r-reshape2
+
+  # 通过pip安装的包
+  - pip:
+    - scanpy
+    - anndata
+
+  # 注意：以下R包需要通过Bioconductor安装
+  # 在R中运行：
+  # if (!require("BiocManager", quietly = TRUE))
+  #     install.packages("BiocManager")
+  # BiocManager::install(c("DESeq2", "edgeR", "limma", "clusterProfiler",
+  #                        "ChIPseeker", "GEOquery", "TCGAbiolinks", "Seurat"))

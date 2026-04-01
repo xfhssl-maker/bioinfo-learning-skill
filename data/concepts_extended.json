@@ -1,0 +1,47 @@
+{
+  "concepts_extended": [
+    {
+      "id": "deseq2",
+      "term": "DESeq2",
+      "category": "RNA-seq",
+      "definition": "基于负二项分布的RNA-seq差异表达分析R包",
+      "why": "考虑了生物学变异和技术变异，适合小样本分析",
+      "usage": "library(DESeq2)\ndds <- DESeqDataSetFromMatrix(...)\ndds <- DESeq(dds)"
+    },
+    {
+      "id": "bam",
+      "term": "BAM",
+      "full_name": "Binary Alignment Map",
+      "category": "文件格式",
+      "definition": "SAM文件的二进制压缩版本，存储比对结果",
+      "related": ["SAM", "CRAM"],
+      "tools": ["samtools", "picard"]
+    },
+    {
+      "id": "phred",
+      "term": "Phred Score",
+      "category": "质量控制",
+      "definition": "测序质量分数，Q=-10*log10(P)",
+      "example": "Q30表示错误率0.1%，Q20表示错误率1%",
+      "why": "评估测序数据质量的标准"
+    },
+    {
+      "id": "pca",
+      "term": "PCA",
+      "full_name": "Principal Component Analysis",
+      "category": "降维",
+      "definition": "主成分分析，将高维数据投影到低维空间",
+      "use_case": "样本聚类、批次效应检测",
+      "related": ["t-SNE", "UMAP"]
+    },
+    {
+      "id": "log2fc",
+      "term": "log2FC",
+      "full_name": "log2 Fold Change",
+      "category": "差异分析",
+      "definition": "表达量变化的对数值",
+      "example": "log2FC=1表示上调2倍，log2FC=-1表示下调2倍",
+      "why": "对数转换使数据更对称，便于统计分析"
+    }
+  ]
+}

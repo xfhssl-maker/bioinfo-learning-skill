@@ -1,0 +1,118 @@
+{
+  "weeks": [
+    {
+      "week": 17,
+      "title": "单细胞RNA-seq分析（上）",
+      "difficulty": "★★★★☆",
+      "biological_context": {
+        "why": "单细胞测序是当前最热门的技术，可以解析细胞异质性",
+        "real_scenario": "肿瘤微环境研究、发育生物学、免疫学研究",
+        "industry_standard": "Seurat是单细胞分析的标准工具"
+      },
+      "cognitive_dimension": {
+        "bloom_levels": {
+          "remember": ["列出单细胞分析步骤", "说出UMI的作用"],
+          "understand": ["解释单细胞测序原理", "说明质控指标的意义"],
+          "apply": ["创建Seurat对象", "进行质控和标准化"],
+          "analyze": ["分析质控指标", "判断数据质量"],
+          "evaluate": ["评估质控阈值的合理性"]
+        }
+      },
+      "contextual_dimension": {
+        "real_scenario": {
+          "title": "场景：PBMC单细胞数据分析",
+          "tasks": [
+            "读取10x数据",
+            "质控（过滤低质量细胞）",
+            "标准化和特征选择",
+            "准备降维分析"
+          ]
+        },
+        "role": "中级分析师"
+      }
+    },
+    {
+      "week": 18,
+      "title": "单细胞RNA-seq分析（下）",
+      "difficulty": "★★★★☆",
+      "cognitive_dimension": {
+        "bloom_levels": {
+          "apply": ["降维和聚类", "Marker基因鉴定", "细胞类型注释"],
+          "analyze": ["分析细胞亚群特征"],
+          "evaluate": ["评估聚类质量"],
+          "create": ["设计细胞注释策略"]
+        }
+      },
+      "contextual_dimension": {
+        "real_scenario": {
+          "title": "场景：免疫细胞亚群鉴定",
+          "tasks": [
+            "PCA降维",
+            "UMAP可视化",
+            "聚类分析",
+            "Marker基因鉴定",
+            "细胞类型注释",
+            "生成分析报告"
+          ]
+        },
+        "role": "中级分析师"
+      }
+    },
+    {
+      "week": 19,
+      "title": "多组学整合分析",
+      "difficulty": "★★★★★",
+      "biological_context": {
+        "why": "多组学整合可以全面理解生物学过程",
+        "real_scenario": "癌症研究、系统生物学",
+        "industry_standard": "整合表达、突变、甲基化等多层数据"
+      },
+      "cognitive_dimension": {
+        "bloom_levels": {
+          "understand": ["理解多组学整合的意义"],
+          "apply": ["整合多组学数据", "生存分析"],
+          "analyze": ["分析多组学关联"],
+          "evaluate": ["评估整合分析结果"],
+          "create": ["设计多组学分析方案"]
+        }
+      },
+      "contextual_dimension": {
+        "real_scenario": {
+          "title": "场景：TCGA肺癌多组学分析",
+          "tasks": [
+            "下载表达、突变、临床数据",
+            "数据整合",
+            "关联分析",
+            "生存分析",
+            "生成综合报告"
+          ]
+        },
+        "role": "中级分析师"
+      }
+    },
+    {
+      "week": 20,
+      "title": "作品集完善",
+      "difficulty": "★★★☆☆",
+      "cognitive_dimension": {
+        "bloom_levels": {
+          "evaluate": ["评估项目质量", "优化项目展示"],
+          "create": ["创建个人主页", "设计作品集"]
+        }
+      },
+      "contextual_dimension": {
+        "real_scenario": {
+          "title": "场景：准备求职作品集",
+          "tasks": [
+            "整理6-7个项目",
+            "完善README文档",
+            "创建GitHub Pages",
+            "制作项目展示PPT",
+            "录制项目演示视频"
+          ]
+        },
+        "role": "中级分析师"
+      }
+    }
+  ]
+}

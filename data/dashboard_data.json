@@ -1,0 +1,71 @@
+{
+  "_meta": {
+    "version": "1.0",
+    "last_updated": "2026-04-01T00:00:00.000Z",
+    "description": "生信学习助手数据存储 - 自动同步"
+  },
+  "user": {
+    "name": "",
+    "github": "",
+    "blog": "",
+    "start_date": null,
+    "current_week": 1,
+    "current_phase": 1
+  },
+  "settings": {
+    "daily_hours_target": 2.5,
+    "weekly_hours_target": 15,
+    "remind_time": "20:00",
+    "pomodoro_minutes": 25
+  },
+  "progress": {
+    "total_hours": 0,
+    "total_exp": 0,
+    "completed_tasks": [],
+    "completed_projects": [],
+    "blog_posts": [],
+    "interview_practiced": 0
+  },
+  "daily_log": {},
+  "learning_types": {
+    "video": { "hours": 0, "sessions": 0, "label": "📺 看视频教程" },
+    "reading": { "hours": 0, "sessions": 0, "label": "📖 阅读文档/书籍" },
+    "practice": { "hours": 0, "sessions": 0, "label": "💻 动手实践" },
+    "project": { "hours": 0, "sessions": 0, "label": "🚀 做项目" },
+    "exercise": { "hours": 0, "sessions": 0, "label": "✍️ 做练习题" },
+    "review": { "hours": 0, "sessions": 0, "label": "📝 复习总结" }
+  },
+  "pomodoro": {
+    "today_count": 0,
+    "today_minutes": 0,
+    "total_count": 0,
+    "total_minutes": 0,
+    "last_date": null,
+    "history": {}
+  },
+  "skills": {
+    "linux": { "level": 1, "exp": 0, "hours": 0, "name": "Linux 命令", "icon": "fab fa-linux" },
+    "shell": { "level": 1, "exp": 0, "hours": 0, "name": "Shell 脚本", "icon": "fas fa-terminal" },
+    "r_lang": { "level": 1, "exp": 0, "hours": 0, "name": "R 语言", "icon": "fab fa-r-project" },
+    "python": { "level": 1, "exp": 0, "hours": 0, "name": "Python", "icon": "fab fa-python" },
+    "rna_seq": { "level": 1, "exp": 0, "hours": 0, "name": "RNA-seq 分析", "icon": "fas fa-dna" },
+    "wes": { "level": 1, "exp": 0, "hours": 0, "name": "WES/WGS 分析", "icon": "fas fa-microscope" },
+    "chip_seq": { "level": 1, "exp": 0, "hours": 0, "name": "ChIP-seq 分析", "icon": "fas fa-chart-area" },
+    "scrna": { "level": 1, "exp": 0, "hours": 0, "name": "单细胞分析", "icon": "fas fa-circle-nodes" },
+    "data_mining": { "level": 1, "exp": 0, "hours": 0, "name": "数据挖掘", "icon": "fas fa-database" }
+  },
+  "achievements": {
+    "unlocked": [],
+    "current_title": "生信小白",
+    "progress": {}
+  },
+  "ai_settings": {
+    "enabled": false,
+    "provider": "anthropic",
+    "api_key": "",
+    "base_url": "",
+    "model": "claude-sonnet-4-20250514"
+  },
+  "notes": [],
+  "activity_log": []
+}

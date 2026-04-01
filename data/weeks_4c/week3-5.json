@@ -1,0 +1,128 @@
+{
+  "weeks": [
+    {
+      "week": 3,
+      "title": "R语言基础",
+      "difficulty": "★★☆☆☆",
+      "biological_context": {
+        "why": "R是生信数据分析的核心语言，90%的生信统计分析和可视化都用R完成",
+        "real_scenario": "RNA-seq差异分析、单细胞数据处理、基因富集分析都需要R",
+        "industry_standard": "Bioconductor有2000+生信R包，是生信领域的标准工具库"
+      },
+      "cognitive_dimension": {
+        "bloom_levels": {
+          "remember": ["列出R的5种基本数据类型", "说出向量和列表的区别"],
+          "understand": ["解释数据框的结构", "说明因子类型的用途"],
+          "apply": ["读取CSV文件并进行数据筛选", "计算基因表达的均值和标准差"],
+          "analyze": ["比较向量、矩阵、数据框的使用场景", "分析代码的执行效率"],
+          "create": ["编写函数处理基因表达矩阵"]
+        },
+        "learning_strategy": "边学边练 + 代码注释",
+        "metacognition": ["我理解R的数据结构了吗？", "我能独立处理表格数据吗？", "遇到错误我知道如何调试吗？"]
+      },
+      "collaborative_dimension": {
+        "peer_learning": "结对练习：一人写代码，一人解释每行的作用",
+        "code_review": "互相检查代码的可读性和效率",
+        "community": "分享一个R语言学习技巧"
+      },
+      "contextual_dimension": {
+        "real_scenario": {
+          "title": "场景：处理基因表达矩阵",
+          "background": "收到一个基因表达矩阵（1000基因 x 20样本），需要进行基础统计分析",
+          "tasks": [
+            "读取表达矩阵CSV文件",
+            "计算每个基因在所有样本的平均表达量",
+            "筛选平均表达量>100的基因",
+            "生成箱线图展示表达分布",
+            "输出筛选后的基因列表"
+          ]
+        },
+        "role": "实习生",
+        "industry_practice": "代码必须有注释，变量命名要清晰（gene_expr而非x）"
+      }
+    },
+    {
+      "week": 4,
+      "title": "R数据处理 + ggplot2",
+      "difficulty": "★★☆☆☆",
+      "biological_context": {
+        "why": "生信分析需要大量数据清洗、转换、可视化，tidyverse是最高效的工具",
+        "real_scenario": "差异基因分析后需要生成火山图、热图、PCA图等专业图表",
+        "industry_standard": "ggplot2是生信论文图表的标准工具，Nature/Science都在用"
+      },
+      "cognitive_dimension": {
+        "bloom_levels": {
+          "remember": ["列出dplyr的5个核心函数", "说出ggplot2的图层概念"],
+          "understand": ["解释管道符%>%的作用", "说明aes映射的原理"],
+          "apply": ["用dplyr筛选和汇总数据", "用ggplot2绘制散点图和箱线图"],
+          "analyze": ["比较base R和tidyverse的优劣", "分析复杂图表的图层结构"],
+          "evaluate": ["评估图表的可读性", "判断何时使用何种图表类型"],
+          "create": ["设计并实现多面板组合图"]
+        },
+        "learning_strategy": "项目驱动 + 模仿优秀案例",
+        "metacognition": ["我能快速完成数据转换吗？", "我的图表专业吗？", "我理解图层语法了吗？"]
+      },
+      "collaborative_dimension": {
+        "peer_learning": "小组作业：每人绘制一种图表类型，最后组合成完整报告",
+        "code_review": "互相评价图表的美观度和专业性",
+        "community": "分享最满意的一张图表"
+      },
+      "contextual_dimension": {
+        "real_scenario": {
+          "title": "场景：生成差异基因分析报告图表",
+          "background": "完成差异分析后，需要生成标准的可视化报告给合作方",
+          "tasks": [
+            "绘制火山图（log2FC vs -log10(pvalue)）",
+            "绘制Top20差异基因的热图",
+            "绘制样本PCA图（区分对照组和处理组）",
+            "绘制基因表达箱线图（对比两组）",
+            "组合成4面板图并导出高分辨率PDF"
+          ]
+        },
+        "role": "实习生",
+        "industry_practice": "图表必须包含：标题、坐标轴标签、图例、统计显著性标记"
+      }
+    },
+    {
+      "week": 5,
+      "title": "Python基础",
+      "difficulty": "★★☆☆☆",
+      "biological_context": {
+        "why": "Python是生信流程开发的主力语言，用于数据预处理、流程自动化",
+        "real_scenario": "解析FASTA/FASTQ文件、批量调用生信工具、开发分析pipeline",
+        "industry_standard": "Biopython是生信Python的标准库，提供序列处理、数据库访问等功能"
+      },
+      "cognitive_dimension": {
+        "bloom_levels": {
+          "remember": ["列出Python的基本数据类型", "说出列表和字典的区别"],
+          "understand": ["解释函数的参数传递", "说明文件读写的原理"],
+          "apply": ["解析FASTA文件", "计算序列的GC含量"],
+          "analyze": ["比较Python和R的使用场景", "分析代码的时间复杂度"],
+          "create": ["开发FASTQ质控工具"]
+        },
+        "learning_strategy": "问题导向 + 代码复用",
+        "metacognition": ["我能独立处理文件吗？", "我理解函数的作用了吗？", "我的代码够简洁吗？"]
+      },
+      "collaborative_dimension": {
+        "peer_learning": "结对编程：共同开发序列分析工具",
+        "code_review": "互相检查代码的健壮性（错误处理）",
+        "community": "分享一个实用的Python技巧"
+      },
+      "contextual_dimension": {
+        "real_scenario": {
+          "title": "场景：开发FASTA文件质控工具",
+          "background": "需要快速检查FASTA文件的质量（序列数、长度分布、GC含量）",
+          "tasks": [
+            "解析FASTA文件，提取序列ID和序列",
+            "统计序列总数",
+            "计算每条序列的长度和GC含量",
+            "输出统计报告（最小/最大/平均长度，平均GC含量）",
+            "标记异常序列（长度<100或GC含量<30%）"
+          ]
+        },
+        "role": "实习生",
+        "industry_practice": "工具必须有帮助文档、参数检查、错误提示"
+      }
+    }
+  ]
+}

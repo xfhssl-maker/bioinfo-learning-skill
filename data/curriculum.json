@@ -1,0 +1,773 @@
+{
+  "meta": {
+    "title": "生物信息学就业导向学习计划",
+    "total_weeks": 24,
+    "total_hours_per_week": "15-20",
+    "goal": "掌握生信核心技能，建立作品集，成功找到生信分析岗位"
+  },
+  "phases": [
+    {
+      "id": 1,
+      "name": "基础技能",
+      "weeks": "1-8",
+      "goal": "基础技能 + 第一个项目",
+      "deliverables": ["GitHub账号", "1个完整项目"]
+    },
+    {
+      "id": 2,
+      "name": "核心生信技能",
+      "weeks": "9-16",
+      "goal": "核心生信技能 + 标准项目",
+      "deliverables": ["3个标准分析项目", "技术博客"]
+    },
+    {
+      "id": 3,
+      "name": "进阶项目",
+      "weeks": "17-20",
+      "goal": "进阶项目 + 作品集",
+      "deliverables": ["2个进阶项目", "完整作品集"]
+    },
+    {
+      "id": 4,
+      "name": "求职准备",
+      "weeks": "21-24",
+      "goal": "求职准备 + 面试",
+      "deliverables": ["简历", "面试准备", "offer"]
+    }
+  ],
+  "curriculum": [
+    {
+      "week": 1,
+      "phase": 1,
+      "title": "环境搭建 + Linux基础",
+      "learning_hours": 10,
+      "practice_hours": 5,
+      "topics": [
+        "安装Linux系统（WSL2或虚拟机）",
+        "学习基本命令：ls, cd, mkdir, cp, mv, rm, cat, head, tail, pwd, which"
+      ],
+      "resources": [
+        {"type": "video", "name": "生信技能树 Linux合集", "url": "https://www.bilibili.com/video/BV1o4411q7AQ/"},
+        {"type": "doc", "name": "WSL2安装指南", "url": ""}
+      ],
+      "tasks": [
+        {"id": "w1t1", "desc": "注册GitHub账号，创建仓库 bioinfo-learning", "type": "setup"},
+        {"id": "w1t2", "desc": "注册Gitee账号（国内备选）", "type": "setup"},
+        {"id": "w1t3", "desc": "创建项目目录结构 ~/bioinfo/{data,scripts,results,notes}", "type": "practice"},
+        {"id": "w1t4", "desc": "写第一篇学习笔记：《Linux基础命令总结》", "type": "output"},
+        {"id": "w1t5", "desc": "提交到GitHub", "type": "output"}
+      ],
+      "code_examples": [
+        {
+          "title": "创建项目目录结构",
+          "language": "bash",
+          "code": "mkdir -p ~/bioinfo/{data,scripts,results,notes}\n\ncd ~/bioinfo/data\nwget https://raw.githubusercontent.com/josoga2/yt-dataset/main/dataset/sequence_downloader/SRR_accession.txt\n\nhead -20 file.txt\ntail -20 file.txt\nwc -l file.txt\ngrep \"pattern\" file.txt"
+        }
+      ]
+    },
+    {
+      "week": 2,
+      "phase": 1,
+      "title": "Linux进阶 + Shell脚本",
+      "learning_hours": 10,
+      "practice_hours": 5,
+      "topics": [
+        "学习文本处理三剑客：grep, awk, sed",
+        "学习管道和重定向：|, >, >>, <",
+        "学习循环和条件判断"
+      ],
+      "resources": [
+        {"type": "doc", "name": "Shell脚本编程入门", "url": "https://www.runoob.com/linux/linux-shell.html"},
+        {"type": "practice", "name": "Rosalind基础题", "url": "http://rosalind.info/problems/locations/"}
+      ],
+      "tasks": [
+        {"id": "w2t1", "desc": "完成Rosalind前5题，代码提交GitHub", "type": "practice"},
+        {"id": "w2t2", "desc": "写脚本：批量重命名文件", "type": "practice"},
+        {"id": "w2t3", "desc": "博客文章：《grep/awk/sed实战案例》", "type": "output"}
+      ],
+      "code_examples": [
+        {
+          "title": "批量统计FASTQ文件序列数",
+          "language": "bash",
+          "code": "#!/bin/bash\n# 批量统计FASTQ文件序列数\n\nfor file in *.fastq; do\n    echo \"Processing: $file\"\n    count=$(($(cat \"$file\" | wc -l) / 4))\n    echo \"$file: $count sequences\"\ndone"
+        }
+      ]
+    },
+    {
+      "week": 3,
+      "phase": 1,
+      "title": "R语言基础",
+      "learning_hours": 12,
+      "practice_hours": 6,
+      "topics": [
+        "安装R和RStudio",
+        "学习：变量类型、向量、矩阵、数据框、列表",
+        "学习基本运算和函数"
+      ],
+      "resources": [
+        {"type": "download", "name": "R", "url": "https://cran.r-project.org/"},
+        {"type": "download", "name": "RStudio", "url": "https://www.rstudio.com/products/rstudio/"},
+        {"type": "video", "name": "R语言实战 - 生信技能树", "url": "https://www.bilibili.com/video/av31349855/"}
+      ],
+      "tasks": [
+        {"id": "w3t1", "desc": "安装R和RStudio", "type": "setup"},
+        {"id": "w3t2", "desc": "完成10个R基础练习题", "type": "practice"},
+        {"id": "w3t3", "desc": "代码提交GitHub（创建 R-basics 文件夹）", "type": "output"},
+        {"id": "w3t4", "desc": "博客：《R语言数据结构详解》", "type": "output"}
+      ],
+      "code_examples": [
+        {
+          "title": "R基础操作",
+          "language": "r",
+          "code": "# 1. 读取CSV文件\ndata <- read.csv(\"data.csv\", stringsAsFactors = FALSE)\n\n# 2. 数据筛选和统计\nsubset_data <- data[data$value > 10, ]\nsummary(subset_data)\n\n# 3. 计算\nmean(data$column)\nsd(data$column)\ncor(data$x, data$y)\n\n# 4. 简单可视化\nplot(data$x, data$y)\nhist(data$value)\nboxplot(value ~ group, data = data)"
+        }
+      ]
+    },
+    {
+      "week": 4,
+      "phase": 1,
+      "title": "R语言数据处理 + ggplot2",
+      "learning_hours": 12,
+      "practice_hours": 6,
+      "topics": [
+        "学习tidyverse全家桶：dplyr, tidyr, ggplot2",
+        "学习数据重塑：melt, dcast, pivot_longer",
+        "学习可视化：散点图、箱线图、柱状图、热图"
+      ],
+      "resources": [
+        {"type": "doc", "name": "tidyverse官方文档", "url": "https://www.tidyverse.org/"},
+        {"type": "doc", "name": "ggplot2文档", "url": "https://ggplot2.tidyverse.org/"}
+      ],
+      "tasks": [
+        {"id": "w4t1", "desc": "学习dplyr数据处理", "type": "learning"},
+        {"id": "w4t2", "desc": "完成5个数据可视化作品", "type": "practice"},
+        {"id": "w4t3", "desc": "提交GitHub", "type": "output"},
+        {"id": "w4t4", "desc": "博客：《ggplot2常用图表代码模板》", "type": "output"}
+      ],
+      "code_examples": [
+        {
+          "title": "ggplot2数据处理与可视化",
+          "language": "r",
+          "code": "library(tidyverse)\nlibrary(ggplot2)\n\n# 数据处理练习\ndata %>%\n  filter(condition == \"treatment\") %>%\n  group_by(group) %>%\n  summarise(\n    mean_val = mean(value, na.rm = TRUE),\n    sd_val = sd(value, na.rm = TRUE),\n    n = n()\n  ) %>%\n  ggplot(aes(x = group, y = mean_val, fill = group)) +\n  geom_bar(stat = \"identity\") +\n  geom_errorbar(aes(ymin = mean_val - sd_val, ymax = mean_val + sd_val)) +\n  theme_bw()"
+        }
+      ]
+    },
+    {
+      "week": 5,
+      "phase": 1,
+      "title": "Python基础",
+      "learning_hours": 12,
+      "practice_hours": 6,
+      "topics": [
+        "安装Anaconda或Miniconda",
+        "学习：变量、列表、元组、字典、函数、文件操作"
+      ],
+      "resources": [
+        {"type": "download", "name": "Miniconda", "url": "https://docs.conda.io/en/latest/miniconda.html"},
+        {"type": "doc", "name": "廖雪峰Python教程", "url": "https://www.liaoxuefeng.com/wiki/1016959663602400"}
+      ],
+      "tasks": [
+        {"id": "w5t1", "desc": "安装Miniconda", "type": "setup"},
+        {"id": "w5t2", "desc": "完成Rosalind Python题目（5题）", "type": "practice"},
+        {"id": "w5t3", "desc": "编写FASTA/FASTQ解析工具", "type": "practice"},
+        {"id": "w5t4", "desc": "提交GitHub", "type": "output"}
+      ],
+      "code_examples": [
+        {
+          "title": "FASTA文件解析",
+          "language": "python",
+          "code": "def parse_fasta(filename):\n    sequences = {}\n    with open(filename, 'r') as f:\n        seq_id = None\n        seq = []\n        for line in f:\n            line = line.strip()\n            if line.startswith('>'):\n                if seq_id:\n                    sequences[seq_id] = ''.join(seq)\n                seq_id = line[1:].split()[0]\n                seq = []\n            else:\n                seq.append(line)\n        if seq_id:\n            sequences[seq_id] = ''.join(seq)\n    return sequences\n\ndef calculate_gc(sequence):\n    gc_count = sequence.count('G') + sequence.count('C')\n    return gc_count / len(sequence) * 100"
+        }
+      ]
+    },
+    {
+      "week": 6,
+      "phase": 1,
+      "title": "Python数据分析（Pandas + Numpy）",
+      "learning_hours": 12,
+      "practice_hours": 6,
+      "topics": [
+        "学习Pandas：DataFrame操作、数据清洗、合并",
+        "学习Numpy：数组运算、矩阵操作"
+      ],
+      "resources": [
+        {"type": "video", "name": "pandas数据分析", "url": "https://www.bilibili.com/video/BV1hx411Y7E4"},
+        {"type": "doc", "name": "Pandas官方文档", "url": "https://pandas.pydata.org/"}
+      ],
+      "tasks": [
+        {"id": "w6t1", "desc": "学习Pandas基础操作", "type": "learning"},
+        {"id": "w6t2", "desc": "完成5个数据处理案例", "type": "practice"},
+        {"id": "w6t3", "desc": "编写基因表达矩阵处理脚本", "type": "practice"},
+        {"id": "w6t4", "desc": "博客：《Pandas处理生信数据实战》", "type": "output"}
+      ],
+      "code_examples": [
+        {
+          "title": "Pandas数据处理",
+          "language": "python",
+          "code": "import pandas as pd\nimport numpy as np\n\n# 读取基因表达矩阵\nexpr = pd.read_csv(\"expression.csv\", index_col=0)\n\n# 数据标准化 (Z-score)\nexpr_norm = (expr - expr.mean()) / expr.std()\n\n# 筛选差异基因\ndiff_genes = expr[expr['pvalue'] < 0.05]\n\n# 数据重塑\nexpr_long = expr.reset_index().melt(\n    id_vars='gene', \n    var_name='sample', \n    value_name='expression'\n)"
+        }
+      ]
+    },
+    {
+      "week": 7,
+      "phase": 1,
+      "title": "Conda环境管理 + 生信工具安装",
+      "learning_hours": 8,
+      "practice_hours": 8,
+      "topics": [
+        "学习Conda/Mamba环境管理",
+        "学习Bioconda",
+        "（可选）学习Docker基础"
+      ],
+      "resources": [
+        {"type": "doc", "name": "Bioconda", "url": "https://bioconda.github.io/"},
+        {"type": "doc", "name": "Conda文档", "url": "https://docs.conda.io/"}
+      ],
+      "tasks": [
+        {"id": "w7t1", "desc": "创建生信环境 conda create -n bioinfo python=3.11", "type": "setup"},
+        {"id": "w7t2", "desc": "安装基础生信工具（fastqc, bwa, samtools等）", "type": "setup"},
+        {"id": "w7t3", "desc": "编写环境配置文档 environment.yml", "type": "output"},
+        {"id": "w7t4", "desc": "博客：《Conda配置生信环境指南》", "type": "output"}
+      ],
+      "code_examples": [
+        {
+          "title": "Conda环境配置",
+          "language": "bash",
+          "code": "# 1. 创建生信环境\nconda create -n bioinfo python=3.11 -y\nconda activate bioinfo\n\n# 2. 安装基础生信工具\nconda install -c bioconda -y \\\n    fastqc \\\n    trimmomatic \\\n    bwa \\\n    samtools \\\n    bcftools \\\n    hisat2 \\\n    star \\\n    macs2 \\\n    bedtools\n\n# 3. 安装R包\nconda install -c conda-forge -y r-tidyverse r-deseq2 r-scater\n\n# 4. 测试工具\nfastqc --version\nsamtools --version\nhisat2 --version"
+        }
+      ]
+    },
+    {
+      "week": 8,
+      "phase": 1,
+      "title": "项目1 - RNA-seq数据质控与比对",
+      "learning_hours": 6,
+      "practice_hours": 12,
+      "project": {
+        "name": "RNA-seq-pipeline",
+        "type": "pipeline",
+        "skills": ["FastQC", "Trimmomatic", "HISAT2", "SAMtools"]
+      },
+      "topics": [
+        "学习FASTQ/FASTA格式",
+        "学习测序质量体系（Phred score）",
+        "学习序列比对原理（BWA/HISAT2）"
+      ],
+      "resources": [
+        {"type": "data", "name": "NCBI SRA", "url": "https://www.ncbi.nlm.nih.gov/sra"},
+        {"type": "data", "name": "ENA", "url": "https://www.ebi.ac.uk/ena/browser/"}
+      ],
+      "tasks": [
+        {"id": "w8t1", "desc": "完成完整的RNA-seq前处理流程", "type": "project"},
+        {"id": "w8t2", "desc": "编写自动化脚本 run_rnaseq_qc.sh", "type": "project"},
+        {"id": "w8t3", "desc": "生成质控报告", "type": "project"},
+        {"id": "w8t4", "desc": "GitHub项目：RNA-seq-pipeline", "type": "output"},
+        {"id": "w8t5", "desc": "博客：《我的第一个RNA-seq分析项目》", "type": "output"}
+      ],
+      "code_examples": [
+        {
+          "title": "RNA-seq前处理流程",
+          "language": "bash",
+          "code": "# 完整的RNA-seq前处理流程\n\n# 1. 质量控制\nmkdir -p 01_qc\nfastqc -o 01_qc -t 4 sample_R1.fastq.gz sample_R2.fastq.gz\nmultiqc 01_qc -o 01_qc\n\n# 2. 去接头和质量过滤\nmkdir -p 02_clean\ntrimmomatic PE -threads 4 \\\n    sample_R1.fastq.gz sample_R2.fastq.gz \\\n    02_clean/sample_R1.clean.fastq.gz 02_clean/sample_R1.unpair.fastq.gz \\\n    02_clean/sample_R2.clean.fastq.gz 02_clean/sample_R2.unpair.fastq.gz \\\n    ILLUMINACLIP:TruSeq3-PE.fa:2:30:10 \\\n    LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:36\n\n# 3. 比对到参考基因组\nmkdir -p 03_alignment\nhisat2 -x genome_index \\\n    -1 02_clean/sample_R1.clean.fastq.gz \\\n    -2 02_clean/sample_R2.clean.fastq.gz \\\n    -S 03_alignment/aligned.sam \\\n    --new-summary -p 4\n\n# 4. SAM转BAM并排序\nsamtools view -bS 03_alignment/aligned.sam | \\\n    samtools sort -o 03_alignment/aligned.sorted.bam\nsamtools index 03_alignment/aligned.sorted.bam\n\n# 5. 统计比对率\nsamtools flagstat 03_alignment/aligned.sorted.bam"
+        }
+      ]
+    },
+    {
+      "week": 9,
+      "phase": 2,
+      "title": "项目2 - RNA-seq差异表达分析（上）",
+      "learning_hours": 4,
+      "practice_hours": 10,
+      "project": {
+        "name": "RNA-seq-DEG-analysis",
+        "type": "analysis",
+        "skills": ["DESeq2", "edgeR", "limma"]
+      },
+      "topics": [
+        "学习FPKM/TPM/CPM概念",
+        "学习DESeq2/edgeR原理",
+        "学习差异分析统计方法（FDR、p-value）"
+      ],
+      "resources": [
+        {"type": "doc", "name": "DESeq2文档", "url": "https://bioconductor.org/packages/DESeq2/"},
+        {"type": "doc", "name": "edgeR文档", "url": "https://bioconductor.org/packages/edgeR/"}
+      ],
+      "tasks": [
+        {"id": "w9t1", "desc": "学习差异分析原理", "type": "learning"},
+        {"id": "w9t2", "desc": "准备count矩阵和临床信息", "type": "practice"},
+        {"id": "w9t3", "desc": "创建DESeq对象并运行分析", "type": "project"}
+      ],
+      "code_examples": [
+        {
+          "title": "DESeq2差异分析",
+          "language": "r",
+          "code": "library(DESeq2)\nlibrary(tidyverse)\n\n# 1. 读取count矩阵和临床信息\ncounts <- read.csv(\"counts.csv\", row.names = 1)\ncoldata <- read.csv(\"metadata.csv\", row.names = 1)\ncoldata$group <- factor(coldata$group)\n\n# 2. 创建DESeq对象\ndds <- DESeqDataSetFromMatrix(\n  countData = counts,\n  colData = coldata,\n  design = ~ group\n)\n\n# 3. 差异分析\ndds <- DESeq(dds)\nres <- results(dds, contrast = c(\"group\", \"treatment\", \"control\"))"
+        }
+      ]
+    },
+    {
+      "week": 10,
+      "phase": 2,
+      "title": "项目2 - RNA-seq差异表达分析（下）",
+      "learning_hours": 4,
+      "practice_hours": 10,
+      "project": {
+        "name": "RNA-seq-DEG-analysis",
+        "type": "analysis",
+        "skills": ["ggplot2", "pheatmap", "PCA"]
+      },
+      "topics": [
+        "显著性筛选与可视化",
+        "火山图、热图、PCA图"
+      ],
+      "tasks": [
+        {"id": "w10t1", "desc": "筛选显著差异基因", "type": "project"},
+        {"id": "w10t2", "desc": "生成火山图、热图、PCA图", "type": "project"},
+        {"id": "w10t3", "desc": "编写R Markdown报告", "type": "project"},
+        {"id": "w10t4", "desc": "GitHub项目：RNA-seq-DEG-analysis", "type": "output"},
+        {"id": "w10t5", "desc": "博客：《RNA-seq差异表达分析完整教程》", "type": "output"}
+      ],
+      "code_examples": [
+        {
+          "title": "差异分析可视化",
+          "language": "r",
+          "code": "library(ggplot2)\nlibrary(pheatmap)\n\n# 4. 显著性筛选\nres_sig <- res[res$padj < 0.05 & abs(res$log2FoldChange) > 1, ]\nres_sig <- res_sig[order(res_sig$padj), ]\n\n# 5. 火山图\nggplot(as.data.frame(res), aes(x = log2FoldChange, y = -log10(padj))) +\n  geom_point(alpha = 0.5) +\n  geom_hline(yintercept = -log10(0.05), linetype = \"dashed\") +\n  geom_vline(xintercept = c(-1, 1), linetype = \"dashed\") +\n  theme_bw()\n\n# PCA图\nvsd <- vst(dds, blind = FALSE)\npca_data <- plotPCA(vsd, intgroup = \"group\", returnData = TRUE)\nggplot(pca_data, aes(PC1, PC2, color = group)) +\n  geom_point(size = 3) +\n  theme_bw()"
+        }
+      ]
+    },
+    {
+      "week": 11,
+      "phase": 2,
+      "title": "项目3 - WES变异检测（上）",
+      "learning_hours": 5,
+      "practice_hours": 10,
+      "project": {
+        "name": "WES-variant-calling",
+        "type": "pipeline",
+        "skills": ["GATK", "BWA", "SAMtools"]
+      },
+      "topics": [
+        "学习GATK Best Practices",
+        "学习VCF格式和变异注释"
+      ],
+      "resources": [
+        {"type": "doc", "name": "GATK Best Practices", "url": "https://gatk.broadinstitute.org/hc/en-us/articles/360035535912"},
+        {"type": "doc", "name": "VCF格式说明", "url": "https://samtools.github.io/hts-specs/VCFv4.2.pdf"}
+      ],
+      "tasks": [
+        {"id": "w11t1", "desc": "学习GATK Best Practices", "type": "learning"},
+        {"id": "w11t2", "desc": "下载参考基因组和数据库", "type": "setup"},
+        {"id": "w11t3", "desc": "完成比对和标记重复", "type": "project"}
+      ],
+      "code_examples": [
+        {
+          "title": "GATK前处理",
+          "language": "bash",
+          "code": "# GATK变异检测流程\n\n# 1. 构建BWA索引\nbwa index ref.fa\n\n# 2. 比对\nbwa mem -t 8 -R \"@RG\\tID:sample\\tSM:sample\\tPL:ILLUMINA\" \\\n    ref.fa sample_R1.fq.gz sample_R2.fq.gz | \\\n    samtools sort -o sample.sorted.bam\n\n# 3. 标记重复\ngatk MarkDuplicates -I sample.sorted.bam -O sample.dedup.bam \\\n    -M metrics.txt\n\n# 4. BQSR\ngatk BaseRecalibrator -I sample.dedup.bam -R ref.fa \\\n    --known-sites dbsnp.vcf -O recal.table\ngatk ApplyBQSR -I sample.dedup.bam -R ref.fa \\\n    --bqsr-recal-file recal.table -O sample.recal.bam"
+        }
+      ]
+    },
+    {
+      "week": 12,
+      "phase": 2,
+      "title": "项目3 - WES变异检测（下）",
+      "learning_hours": 5,
+      "practice_hours": 10,
+      "project": {
+        "name": "WES-variant-calling",
+        "type": "pipeline",
+        "skills": ["GATK", "SnpEff", "bcftools"]
+      },
+      "topics": [
+        "学习SnpEff/ANNOVAR注释",
+        "变异过滤与统计"
+      ],
+      "tasks": [
+        {"id": "w12t1", "desc": "完成变异检测（HaplotypeCaller）", "type": "project"},
+        {"id": "w12t2", "desc": "变异过滤和注释", "type": "project"},
+        {"id": "w12t3", "desc": "编写自动化pipeline脚本", "type": "project"},
+        {"id": "w12t4", "desc": "生成变异统计报告", "type": "project"},
+        {"id": "w12t5", "desc": "GitHub项目：WES-variant-calling", "type": "output"},
+        {"id": "w12t6", "desc": "博客：《GATK变异检测实战指南》", "type": "output"}
+      ],
+      "code_examples": [
+        {
+          "title": "GATK变异检测与注释",
+          "language": "bash",
+          "code": "# 5. 变异检测（HaplotypeCaller）\ngatk HaplotypeCaller -R ref.fa -I sample.recal.bam \\\n    -O raw_variants.vcf\n\n# 6. 变异过滤\ngatk VariantFiltration -R ref.fa -V raw_variants.vcf \\\n    --filter-expression \"QD < 2.0 || MQ < 40.0 || FS > 60.0 || SOR > 3.0\" \\\n    --filter-name \"FAIL\" \\\n    -O filtered_variants.vcf\n\n# 7. 提取PASS变异\nbcftools view -f PASS filtered_variants.vcf -o variants_pass.vcf\n\n# 8. 注释\njava -Xmx4g -jar snpEff.jar GRCh38.86 variants_pass.vcf > annotated.vcf"
+        }
+      ]
+    },
+    {
+      "week": 13,
+      "phase": 2,
+      "title": "项目4 - ChIP-seq分析（上）",
+      "learning_hours": 4,
+      "practice_hours": 10,
+      "project": {
+        "name": "ChIP-seq-analysis",
+        "type": "analysis",
+        "skills": ["MACS2", "Bowtie2", "bedtools"]
+      },
+      "topics": [
+        "学习ChIP-seq原理",
+        "学习Peak calling方法（MACS2）"
+      ],
+      "resources": [
+        {"type": "doc", "name": "MACS2文档", "url": "https://macs3-project.github.io/MACS/"},
+        {"type": "doc", "name": "ChIP-seq分析指南", "url": "https://www.encodeproject.org/documents/8f7e287e-2d5b-49e6-af18-d15f618c9e49/"}
+      ],
+      "tasks": [
+        {"id": "w13t1", "desc": "学习ChIP-seq原理", "type": "learning"},
+        {"id": "w13t2", "desc": "完成质控和比对", "type": "project"},
+        {"id": "w13t3", "desc": "运行MACS2 Peak calling", "type": "project"}
+      ],
+      "code_examples": [
+        {
+          "title": "ChIP-seq比对",
+          "language": "bash",
+          "code": "# ChIP-seq分析流程\n\n# 1. 质控和比对\nfastqc chip.fastq.gz input.fastq.gz\nbowtie2 -x genome -U chip.fastq.gz -S chip.sam --no-mixed\nbowtie2 -x genome -U input.fastq.gz -S input.sam --no-mixed\n\n# SAM转BAM\nsamtools view -bS chip.sam | samtools sort -o chip.bam\nsamtools view -bS input.sam | samtools sort -o input.bam\nsamtools index chip.bam input.bam\n\n# 2. Peak calling (MACS2)\nmacs2 callpeak -t chip.bam -c input.bam \\\n    -f BAM -g hs -n sample \\\n    --outdir peaks \\\n    --qvalue 0.01"
+        }
+      ]
+    },
+    {
+      "week": 14,
+      "phase": 2,
+      "title": "项目4 - ChIP-seq分析（下）",
+      "learning_hours": 4,
+      "practice_hours": 10,
+      "project": {
+        "name": "ChIP-seq-analysis",
+        "type": "analysis",
+        "skills": ["ChIPseeker", "Motif分析"]
+      },
+      "topics": [
+        "学习Peak注释",
+        "学习Motif分析"
+      ],
+      "tasks": [
+        {"id": "w14t1", "desc": "完成Peak注释（ChIPseeker）", "type": "project"},
+        {"id": "w14t2", "desc": "生成Peak分布图、注释饼图", "type": "project"},
+        {"id": "w14t3", "desc": "完成Motif分析", "type": "project"},
+        {"id": "w14t4", "desc": "GitHub项目：ChIP-seq-analysis", "type": "output"},
+        {"id": "w14t5", "desc": "博客：《ChIP-seq数据分析从入门到精通》", "type": "output"}
+      ],
+      "code_examples": [
+        {
+          "title": "Peak注释（R）",
+          "language": "r",
+          "code": "library(ChIPseeker)\nlibrary(TxDb.Hsapiens.UCSC.hg38.db)\n\npeak <- readPeakFile(\"peaks/sample_peaks.narrowPeak\")\ntxdb <- TxDb.Hsapiens.UCSC.hg38.db\n\n# 注释\npeakAnno <- annotatePeak(peak, tssRegion = c(-3000, 3000), \n                          TxDb = txdb)\n\n# 可视化\nplotAnnoPie(peakAnno)\nplotDistToTSS(peakAnno)"
+        }
+      ]
+    },
+    {
+      "week": 15,
+      "phase": 2,
+      "title": "GEO数据挖掘",
+      "learning_hours": 4,
+      "practice_hours": 10,
+      "project": {
+        "name": "GEO-data-mining",
+        "type": "analysis",
+        "skills": ["GEOquery", "limma", "clusterProfiler"]
+      },
+      "topics": [
+        "学习GEO数据库结构和使用",
+        "学习GEOquery包"
+      ],
+      "resources": [
+        {"type": "data", "name": "GEO数据库", "url": "https://www.ncbi.nlm.nih.gov/geo/"},
+        {"type": "doc", "name": "GEOquery文档", "url": "https://bioconductor.org/packages/GEOquery/"}
+      ],
+      "tasks": [
+        {"id": "w15t1", "desc": "学习GEO数据库使用", "type": "learning"},
+        {"id": "w15t2", "desc": "下载并分析GEO数据集", "type": "project"},
+        {"id": "w15t3", "desc": "完成差异分析和富集分析", "type": "project"}
+      ],
+      "code_examples": [
+        {
+          "title": "GEO数据挖掘",
+          "language": "r",
+          "code": "library(GEOquery)\nlibrary(limma)\nlibrary(tidyverse)\n\n# 1. 下载GEO数据\ngset <- getGEO(\"GSE12345\", GSEMatrix = TRUE, getGPL = FALSE)\nexpr <- exprs(gset[[1]])\npdata <- pData(gset[[1]])\n\n# 2. 差异分析\ngroup <- ifelse(grepl(\"tumor\", pdata$title), \"tumor\", \"normal\")\ndesign <- model.matrix(~0+group)\ncolnames(design) <- c(\"normal\", \"tumor\")\n\nfit <- lmFit(expr, design)\ncontrast <- makeContrasts(tumor - normal, levels = design)\nfit2 <- contrasts.fit(fit, contrast)\nfit2 <- eBayes(fit2)\n\n# 3. 筛选差异基因\ndiff_genes <- topTable(fit2, number = Inf, p.value = 0.05)"
+        }
+      ]
+    },
+    {
+      "week": 16,
+      "phase": 2,
+      "title": "TCGA数据挖掘",
+      "learning_hours": 4,
+      "practice_hours": 10,
+      "project": {
+        "name": "GEO-data-mining",
+        "type": "analysis",
+        "skills": ["TCGAbiolinks", "生存分析"]
+      },
+      "topics": [
+        "学习TCGA数据下载方法",
+        "学习TCGAbiolinks包"
+      ],
+      "resources": [
+        {"type": "data", "name": "TCGA", "url": "https://portal.gdc.cancer.gov/"},
+        {"type": "doc", "name": "TCGAbiolinks文档", "url": "https://bioconductor.org/packages/TCGAbiolinks/"}
+      ],
+      "tasks": [
+        {"id": "w16t1", "desc": "学习TCGA数据下载", "type": "learning"},
+        {"id": "w16t2", "desc": "下载TCGA数据", "type": "project"},
+        {"id": "w16t3", "desc": "完成TCGA数据分析", "type": "project"},
+        {"id": "w16t4", "desc": "GitHub项目：GEO-data-mining", "type": "output"},
+        {"id": "w16t5", "desc": "博客：《公共数据挖掘实战》", "type": "output"}
+      ],
+      "code_examples": [
+        {
+          "title": "TCGA数据下载",
+          "language": "r",
+          "code": "library(TCGAbiolinks)\n\n# 使用TCGAbiolinks下载\nquery <- GDCquery(project = \"TCGA-LUAD\",\n                  data.category = \"Transcriptome Profiling\",\n                  data.type = \"Gene Expression Quantification\")\n\nGDCdownload(query)\nexp <- GDCprepare(query)"
+        }
+      ]
+    },
+    {
+      "week": 17,
+      "phase": 3,
+      "title": "项目5 - 单细胞RNA-seq分析（上）",
+      "learning_hours": 5,
+      "practice_hours": 12,
+      "project": {
+        "name": "scRNA-seq-analysis",
+        "type": "analysis",
+        "skills": ["Seurat", "Harmony"]
+      },
+      "topics": [
+        "学习单细胞测序原理",
+        "学习Seurat包（最新v5版本）"
+      ],
+      "resources": [
+        {"type": "doc", "name": "Seurat文档", "url": "https://satijalab.org/seurat/"},
+        {"type": "data", "name": "10x Genomics数据", "url": "https://www.10xgenomics.com/resources/datasets"}
+      ],
+      "tasks": [
+        {"id": "w17t1", "desc": "学习单细胞测序原理", "type": "learning"},
+        {"id": "w17t2", "desc": "创建Seurat对象", "type": "project"},
+        {"id": "w17t3", "desc": "完成质控和标准化", "type": "project"}
+      ],
+      "code_examples": [
+        {
+          "title": "Seurat单细胞分析",
+          "language": "r",
+          "code": "library(Seurat)\nlibrary(tidyverse)\n\n# 1. 创建Seurat对象\npbmc <- CreateSeuratObject(counts = count_matrix)\n\n# 2. 质控\npbmc[[\"percent.mt\"]] <- PercentageFeatureSet(pbmc, pattern = \"^MT-\")\npbmc <- subset(pbmc, \n               subset = nFeature_RNA > 200 & \n                        nFeature_RNA < 2500 & \n                        percent.mt < 5)\n\n# 3. 标准化\npbmc <- NormalizeData(pbmc)\npbmc <- FindVariableFeatures(pbmc, nfeatures = 2000)\npbmc <- ScaleData(pbmc)"
+        }
+      ]
+    },
+    {
+      "week": 18,
+      "phase": 3,
+      "title": "项目5 - 单细胞RNA-seq分析（下）",
+      "learning_hours": 5,
+      "practice_hours": 13,
+      "project": {
+        "name": "scRNA-seq-analysis",
+        "type": "analysis",
+        "skills": ["Seurat", "UMAP", "细胞注释"]
+      },
+      "topics": [
+        "学习细胞类型注释方法",
+        "降维与聚类"
+      ],
+      "tasks": [
+        {"id": "w18t1", "desc": "完成降维和聚类", "type": "project"},
+        {"id": "w18t2", "desc": "Marker基因鉴定", "type": "project"},
+        {"id": "w18t3", "desc": "细胞类型注释", "type": "project"},
+        {"id": "w18t4", "desc": "生成UMAP图、Marker热图、小提琴图", "type": "project"},
+        {"id": "w18t5", "desc": "GitHub项目：scRNA-seq-analysis", "type": "output"},
+        {"id": "w18t6", "desc": "博客：《单细胞RNA-seq分析完整流程》", "type": "output"}
+      ],
+      "code_examples": [
+        {
+          "title": "单细胞降维聚类",
+          "language": "r",
+          "code": "library(Seurat)\nlibrary(harmony)\n\n# 4. 降维\npbmc <- RunPCA(pbmc, npcs = 50)\npbmc <- RunUMAP(pbmc, dims = 1:30)\npbmc <- RunTSNE(pbmc, dims = 1:30)\n\n# 5. 聚类\npbmc <- pbmc %>% \n  RunHarmony(group.by.vars = \"orig.ident\") %>%\n  FindNeighbors(reduction = \"harmony\", dims = 1:30) %>%\n  FindClusters(resolution = 0.5)\n\n# 6. Marker基因鉴定\nmarkers <- FindAllMarkers(pbmc, only.pos = TRUE, min.pct = 0.25)\ntop_markers <- markers %>% group_by(cluster) %>% top_n(10, avg_log2FC)\n\n# 8. 可视化\nDimPlot(pbmc, reduction = \"umap\", label = TRUE)\nDoHeatmap(pbmc, features = top_markers$gene)\nVlnPlot(pbmc, features = c(\"CD3D\", \"MS4A1\", \"CD14\"))"
+        }
+      ]
+    },
+    {
+      "week": 19,
+      "phase": 3,
+      "title": "项目6 - 多组学整合分析",
+      "learning_hours": 5,
+      "practice_hours": 15,
+      "project": {
+        "name": "multi-omics-integration",
+        "type": "analysis",
+        "skills": ["TCGAbiolinks", "survival", "survminer"]
+      },
+      "topics": [
+        "多组学数据整合",
+        "生存分析"
+      ],
+      "tasks": [
+        {"id": "w19t1", "desc": "选择多组学整合方向", "type": "decision"},
+        {"id": "w19t2", "desc": "下载多组学数据", "type": "project"},
+        {"id": "w19t3", "desc": "完成数据整合分析", "type": "project"},
+        {"id": "w19t4", "desc": "完成生存分析", "type": "project"},
+        {"id": "w19t5", "desc": "GitHub项目：multi-omics-integration", "type": "output"},
+        {"id": "w19t6", "desc": "博客：《多组学数据整合分析案例》", "type": "output"}
+      ],
+      "code_examples": [
+        {
+          "title": "生存分析",
+          "language": "r",
+          "code": "library(TCGAbiolinks)\nlibrary(survival)\nlibrary(survminer)\n\n# 1. 下载多组学数据\nquery_exp <- GDCquery(project = \"TCGA-LUAD\",\n                      data.category = \"Transcriptome Profiling\")\nexp_data <- GDCprepare(query_exp)\n\nquery_cli <- GDCquery(project = \"TCGA-LUAD\",\n                      data.category = \"Clinical\")\ncli_data <- GDCprepare(query_cli)\n\n# 2. 生存分析\nsurv_data <- cli_data[, c(\"submitter_id\", \"vital_status\", \"days_to_death\")]\nsurv_data$time <- ifelse(surv_data$vital_status == \"Dead\",\n                         surv_data$days_to_death, NA)\nsurv_data$event <- ifelse(surv_data$vital_status == \"Dead\", 1, 0)\n\nfit <- survfit(Surv(time, event) ~ group, data = surv_data)\nggsurvplot(fit, data = surv_data, pval = TRUE)"
+        }
+      ]
+    },
+    {
+      "week": 20,
+      "phase": 3,
+      "title": "作品集完善",
+      "learning_hours": 5,
+      "practice_hours": 15,
+      "topics": [
+        "整理GitHub项目",
+        "创建个人主页",
+        "制作项目展示PPT"
+      ],
+      "tasks": [
+        {"id": "w20t1", "desc": "整理所有GitHub项目，添加完整README", "type": "output"},
+        {"id": "w20t2", "desc": "创建个人主页（GitHub Pages）", "type": "output"},
+        {"id": "w20t3", "desc": "整理技术博客（至少10篇）", "type": "output"},
+        {"id": "w20t4", "desc": "制作项目展示PPT", "type": "output"}
+      ]
+    },
+    {
+      "week": 21,
+      "phase": 4,
+      "title": "简历准备",
+      "learning_hours": 5,
+      "practice_hours": 10,
+      "topics": [
+        "撰写技术简历（中英文）",
+        "突出6个项目经验",
+        "列出掌握的技能"
+      ],
+      "tasks": [
+        {"id": "w21t1", "desc": "撰写中文简历", "type": "output"},
+        {"id": "w21t2", "desc": "撰写英文简历", "type": "output"},
+        {"id": "w21t3", "desc": "准备项目描述（每个项目5分钟）", "type": "output"}
+      ]
+    },
+    {
+      "week": 22,
+      "phase": 4,
+      "title": "面试准备",
+      "learning_hours": 5,
+      "practice_hours": 10,
+      "topics": [
+        "整理常见面试题（50题）",
+        "准备项目讲解",
+        "复习统计学基础"
+      ],
+      "tasks": [
+        {"id": "w22t1", "desc": "整理常见面试题（50题）", "type": "output"},
+        {"id": "w22t2", "desc": "准备自我介绍（3分钟）", "type": "output"},
+        {"id": "w22t3", "desc": "准备技术问题回答", "type": "output"},
+        {"id": "w22t4", "desc": "准备提问环节问题", "type": "output"}
+      ]
+    },
+    {
+      "week": 23,
+      "phase": 4,
+      "title": "投递简历",
+      "learning_hours": 3,
+      "practice_hours": 12,
+      "topics": [
+        "求职渠道选择",
+        "目标公司投递"
+      ],
+      "resources": [
+        {"type": "platform", "name": "BOSS直聘", "url": "https://www.zhipin.com/"},
+        {"type": "platform", "name": "拉勾网", "url": "https://www.lagou.com/"},
+        {"type": "platform", "name": "猎聘网", "url": "https://www.liepin.com/"}
+      ],
+      "tasks": [
+        {"id": "w23t1", "desc": "每天投递5-10份简历", "type": "practice"},
+        {"id": "w23t2", "desc": "记录投递公司和岗位", "type": "practice"},
+        {"id": "w23t3", "desc": "跟进面试邀请", "type": "practice"}
+      ]
+    },
+    {
+      "week": 24,
+      "phase": 4,
+      "title": "面试与offer",
+      "learning_hours": 3,
+      "practice_hours": 12,
+      "topics": [
+        "面试技巧",
+        "Offer评估"
+      ],
+      "tasks": [
+        {"id": "w24t1", "desc": "每次面试前复习该公司业务", "type": "practice"},
+        {"id": "w24t2", "desc": "准备针对性问题", "type": "practice"},
+        {"id": "w24t3", "desc": "面试后总结经验", "type": "practice"},
+        {"id": "w24t4", "desc": "评估Offer", "type": "decision"}
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "id": 1,
+      "name": "RNA-seq-pipeline",
+      "week": 8,
+      "type": "pipeline",
+      "skills": ["FastQC", "Trimmomatic", "HISAT2", "SAMtools"],
+      "description": "RNA-seq数据质控与比对"
+    },
+    {
+      "id": 2,
+      "name": "RNA-seq-DEG-analysis",
+      "week": 10,
+      "type": "analysis",
+      "skills": ["R", "DESeq2", "ggplot2"],
+      "description": "RNA-seq差异表达分析"
+    },
+    {
+      "id": 3,
+      "name": "WES-variant-calling",
+      "week": 12,
+      "type": "pipeline",
+      "skills": ["GATK", "Python", "SnpEff"],
+      "description": "WES变异检测"
+    },
+    {
+      "id": 4,
+      "name": "ChIP-seq-analysis",
+      "week": 14,
+      "type": "analysis",
+      "skills": ["MACS2", "Peak注释", "Motif"],
+      "description": "ChIP-seq分析"
+    },
+    {
+      "id": 5,
+      "name": "scRNA-seq-analysis",
+      "week": 18,
+      "type": "analysis",
+      "skills": ["Seurat", "UMAP", "聚类"],
+      "description": "单细胞RNA-seq分析"
+    },
+    {
+      "id": 6,
+      "name": "GEO-data-mining",
+      "week": 16,
+      "type": "analysis",
+      "skills": ["公共数据", "富集分析"],
+      "description": "GEO/TCGA数据挖掘"
+    },
+    {
+      "id": 7,
+      "name": "multi-omics-integration",
+      "week": 19,
+      "type": "analysis",
+      "skills": ["数据整合", "生存分析"],
+      "description": "多组学整合分析"
+    }
+  ]
+}

@@ -1,0 +1,236 @@
+{
+  "concepts": {
+    "FPKM": {
+      "full_name": "Fragments Per Kilobase Million",
+      "definition": "每百万reads中，每千碱基长度的片段数",
+      "formula": "FPKM = (reads_count / (gene_length / 1000)) / (total_reads / 1000000)",
+      "usage": "样本内比较基因表达量，但样本间不可直接比较",
+      "related": ["TPM", "CPM", "RPKM"]
+    },
+    "TPM": {
+      "full_name": "Transcripts Per Million",
+      "definition": "每百万reads中，每个转录本的reads数",
+      "formula": "TPM = (reads_count / gene_length) / sum(reads_count / gene_length) * 1000000",
+      "usage": "样本内和样本间都可以比较，推荐用于差异分析前的标准化",
+      "related": ["FPKM", "CPM"]
+    },
+    "CPM": {
+      "full_name": "Counts Per Million",
+      "definition": "每百万reads中的计数",
+      "formula": "CPM = reads_count / total_reads * 1000000",
+      "usage": "不考虑基因长度，用于简单的表达量标准化",
+      "related": ["FPKM", "TPM"]
+    },
+    "FDR": {
+      "full_name": "False Discovery Rate",
+      "definition": "假发现率，在所有显著结果中假阳性的预期比例",
+      "formula": "FDR = E(V/R | R > 0) * P(R > 0)",
+      "usage": "多重检验校正，控制整体假阳性率",
+      "threshold": "通常使用 padj < 0.05",
+      "related": ["p-value", "多重检验", "Benjamini-Hochberg"]
+    },
+    "log2FoldChange": {
+      "full_name": "Log2 Fold Change",
+      "definition": "两个条件间表达量变化的对数值",
+      "formula": "log2FC = log2(expression_treatment / expression_control)",
+      "usage": "衡量差异表达的幅度，通常 |log2FC| > 1 表示两倍变化",
+      "related": ["差异表达", "Fold Change"]
+    },
+    "Phred_score": {
+      "full_name": "Phred Quality Score",
+      "definition": "碱基测序质量的度量",
+      "formula": "Q = -10 * log10(P_error)",
+      "usage": "Q30 表示错误率 0.001，即 99.9% 准确率",
+      "threshold": "通常要求 Q30 > 80%",
+      "related": ["FastQC", "测序质量"]
+    },
+    "VCF": {
+      "full_name": "Variant Call Format",
+      "definition": "变异信息的标准文件格式",
+      "structure": "CHROM, POS, ID, REF, ALT, QUAL, FILTER, INFO, FORMAT, SAMPLES",
+      "usage": "存储SNP、INDEL等变异信息",
+      "related": ["GATK", "bcftools", "变异检测"]
+    },
+    "GVCF": {
+      "full_name": "Genomic VCF",
+      "definition": "包含所有位点信息的VCF格式",
+      "usage": "单样本变异检测结果，用于多样本联合基因分型",
+      "related": ["VCF", "GATK", "HaplotypeCaller"]
+    },
+    "Peak": {
+      "full_name": "ChIP-seq Peak",
+      "definition": "ChIP-seq中显著富集的基因组区域",
+      "types": ["narrowPeak (转录因子)", "broadPeak (组蛋白修饰)"],
+      "usage": "表示蛋白-DNA结合位点或开放染色质区域",
+      "related": ["MACS2", "ChIP-seq", "ATAC-seq"]
+    },
+    "UMAP": {
+      "full_name": "Uniform Manifold Approximation and Projection",
+      "definition": "一种非线性降维方法",
+      "usage": "单细胞数据可视化，展示细胞群体结构",
+      "related": ["t-SNE", "PCA", "Seurat"]
+    }
+  },
+  "tools": {
+    "FastQC": {
+      "purpose": "测序数据质量评估",
+      "input": "FASTQ文件",
+      "output": "HTML质量报告",
+      "key_metrics": ["Per base quality", "GC content", "Sequence duplication", "Adapter content"],
+      "command": "fastqc -t 4 -o output_dir input.fastq.gz"
+    },
+    "Trimmomatic": {
+      "purpose": "去接头和质量过滤",
+      "input": "FASTQ文件",
+      "output": "修剪后的FASTQ文件",
+      "key_params": ["ILLUMINACLIP", "LEADING", "TRAILING", "SLIDINGWINDOW", "MINLEN"],
+      "command": "trimmomatic PE -threads 4 input_R1.fq input_R2.fq output_R1.fq unpaired_R1.fq output_R2.fq unpaired_R2.fq ILLUMINACLIP:adapters.fa:2:30:10 LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:36"
+    },
+    "HISAT2": {
+      "purpose": "RNA-seq序列比对",
+      "input": "FASTQ文件 + 基因组索引",
+      "output": "SAM文件",
+      "key_params": ["-x (索引路径)", "-1/-2 (双端reads)", "-S (输出SAM)"],
+      "command": "hisat2 -x genome_index -1 R1.fq -2 R2.fq -S output.sam -p 8"
+    },
+    "STAR": {
+      "purpose": "RNA-seq序列比对（高速）",
+      "input": "FASTQ文件 + 基因组索引",
+      "output": "SAM/BAM文件",
+      "key_params": ["--runThreadN", "--genomeDir", "--readFilesIn"],
+      "command": "STAR --runThreadN 8 --genomeDir genome_index --readFilesIn R1.fq R2.fq --outFileNamePrefix output_"
+    },
+    "featureCounts": {
+      "purpose": "基因表达定量",
+      "input": "BAM文件 + GTF注释",
+      "output": "基因计数矩阵",
+      "key_params": ["-a (GTF)", "-o (输出)", "-g (属性类型)"],
+      "command": "featureCounts -T 4 -a annotation.gtf -o counts.txt -g gene_id *.bam"
+    },
+    "BWA": {
+      "purpose": "基因组序列比对",
+      "input": "FASTQ文件 + 基因组索引",
+      "output": "SAM文件",
+      "algorithms": ["bwa mem (推荐)", "bwa aln/sampe"],
+      "command": "bwa mem -t 8 -R '@RG\\tID:sample\\tSM:sample' genome.fa R1.fq R2.fq | samtools sort -o output.bam"
+    },
+    "SAMtools": {
+      "purpose": "BAM/SAM文件处理",
+      "key_commands": {
+        "view": "格式转换 (samtools view -bS input.sam -o output.bam)",
+        "sort": "排序 (samtools sort input.bam -o sorted.bam)",
+        "index": "建立索引 (samtools index sorted.bam)",
+        "flagstat": "统计比对率 (samtools flagstat sorted.bam)",
+        "idxstats": "统计染色体reads数 (samtools idxstats sorted.bam)"
+      }
+    },
+    "GATK": {
+      "purpose": "变异检测和分析",
+      "key_tools": {
+        "MarkDuplicates": "标记重复reads",
+        "BaseRecalibrator": "BQSR建模",
+        "ApplyBQSR": "应用BQSR",
+        "HaplotypeCaller": "变异检测",
+        "GenotypeGVCFs": "联合基因分型",
+        "VariantFiltration": "变异过滤"
+      }
+    },
+    "MACS2": {
+      "purpose": "ChIP-seq Peak calling",
+      "input": "ChIP BAM + Input BAM",
+      "output": "Peak文件 (narrowPeak/broadPeak)",
+      "key_params": ["-t (treatment)", "-c (control)", "-f (format)", "-g (genome size)", "-q (qvalue cutoff)"],
+      "command": "macs2 callpeak -t chip.bam -c input.bam -f BAM -g hs -n sample --outdir peaks -q 0.01"
+    },
+    "DESeq2": {
+      "purpose": "RNA-seq差异表达分析",
+      "input": "count矩阵 + metadata",
+      "output": "差异基因列表",
+      "workflow": ["DESeqDataSetFromMatrix", "DESeq", "results"],
+      "r_code": "dds <- DESeqDataSetFromMatrix(counts, colData, design); dds <- DESeq(dds); res <- results(dds)"
+    },
+    "Seurat": {
+      "purpose": "单细胞RNA-seq分析",
+      "workflow": ["CreateSeuratObject", "NormalizeData", "FindVariableFeatures", "ScaleData", "RunPCA", "RunUMAP", "FindNeighbors", "FindClusters", "FindAllMarkers"],
+      "key_params": {
+        "resolution": "聚类分辨率 (0.4-1.2)",
+        "nfeatures": "高变基因数量 (2000-5000)",
+        "dims": "用于聚类的PC数 (20-50)"
+      }
+    },
+    "bcftools": {
+      "purpose": "VCF文件处理",
+      "key_commands": {
+        "view": "查看/过滤VCF (bcftools view -f PASS input.vcf)",
+        "filter": "高级过滤 (bcftools filter -e 'QUAL<30' input.vcf)",
+        "stats": "统计信息 (bcftools stats input.vcf)",
+        "annotate": "添加注释 (bcftools annotate -a annot.txt input.vcf)"
+      }
+    }
+  },
+  "databases": {
+    "NCBI": {
+      "url": "https://www.ncbi.nlm.nih.gov/",
+      "resources": ["SRA", "Gene", "PubMed", "GEO"]
+    },
+    "GEO": {
+      "url": "https://www.ncbi.nlm.nih.gov/geo/",
+      "usage": "基因表达数据库，下载原始数据和分析结果",
+      "r_package": "GEOquery"
+    },
+    "TCGA": {
+      "url": "https://portal.gdc.cancer.gov/",
+      "usage": "癌症基因组数据，包含多组学数据",
+      "r_package": "TCGAbiolinks"
+    },
+    "Ensembl": {
+      "url": "https://www.ensembl.org/",
+      "usage": "参考基因组和注释",
+      "downloads": ["基因组FASTA", "GTF注释", "变异注释"]
+    },
+    "gnomAD": {
+      "url": "https://gnomad.broadinstitute.org/",
+      "usage": "人群频率数据库，用于变异注释",
+      "key_metric": "AF (Allele Frequency)"
+    },
+    "ClinVar": {
+      "url": "https://www.ncbi.nlm.nih.gov/clinvar/",
+      "usage": "临床相关变异数据库",
+      "significance": ["Pathogenic", "Likely pathogenic", "VUS", "Likely benign", "Benign"]
+    },
+    "Bioconductor": {
+      "url": "https://bioconductor.org/",
+      "usage": "R语言生信包仓库",
+      "install": "BiocManager::install()"
+    }
+  },
+  "file_formats": {
+    "FASTQ": {
+      "extension": ".fastq, .fq, .fastq.gz",
+      "structure": "4行一个read: header, sequence, +, quality",
+      "usage": "存储测序原始数据"
+    },
+    "FASTA": {
+      "extension": ".fasta, .fa, .fna, .faa",
+      "structure": ">header\\nsequence",
+      "usage": "存储序列数据（基因组、蛋白等）"
+    },
+    "BAM": {
+      "extension": ".bam",
+      "structure": "二进制格式的比对结果",
+      "usage": "存储比对结果，需要索引文件(.bai)"
+    },
+    "GTF": {
+      "extension": ".gtf",
+      "structure": "基因注释格式，9列制表符分隔",
+      "columns": "seqname, source, feature, start, end, score, strand, frame, attributes",
+      "usage": "基因注释文件"
+    },
+    "VCF": {
+      "extension": ".vcf, .vcf.gz",
+      "structure": "变异信息格式",
+      "columns": "CHROM, POS, ID, REF, ALT, QUAL, FILTER, INFO, FORMAT, SAMPLES",
+      "usage": "存储变异检测结果"
+    }
+  }
+}

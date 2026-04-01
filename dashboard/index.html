@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<!--
+============================================================================
+生物信息学学习系统 - 主页面
+============================================================================
+
+@description  24周生物信息学学习课程可视化面板
+              提供学习进度跟踪、番茄钟计时、技能热力图、
+              面试准备、资源中心等功能
+
+@author       Bioinfo Learning Team
+@version      2.0.0
+@lastUpdate   2026-04-01
+
+@pages
+  1. 仪表盘     - 学习概览、今日任务、番茄钟、热力图
+  2. 技能面板   - RPG风格的技能成长系统
+  3. 学习计划   - 24周课程详情和任务管理
+  4. 面试准备   - 7类面试题目和编程挑战
+  5. 资源中心   - 概念、工具、数据库、文件格式参考
+
+@dependencies
+  - css/style.css : 样式表
+  - js/data.js    : 数据模块
+  - js/app.js     : 应用逻辑
+
+============================================================================
+-->
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>生信学习助手 | Bioinfo Learning</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- 侧边栏 -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-dna"></i>
+                    <span>生信学习</span>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active" data-page="dashboard">
+                    <i class="fas fa-home"></i>
+                    <span>仪表盘</span>
+                </a>
+                <a href="#" class="nav-item" data-page="skills">
+                    <i class="fas fa-shield-halved"></i>
+                    <span>技能面板</span>
+                </a>
+                <a href="#" class="nav-item" data-page="curriculum">
+                    <i class="fas fa-book-open"></i>
+                    <span>学习计划</span>
+                </a>
+                <a href="#" class="nav-item" data-page="interview">
+                    <i class="fas fa-comments"></i>
+                    <span>面试准备</span>
+                </a>
+                <a href="#" class="nav-item" data-page="reference">
+                    <i class="fas fa-database"></i>
+                    <span>资源中心</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="phase-indicator">
+                    <span class="phase-label">当前阶段</span>
+                    <span class="phase-name" id="current-phase">第一阶段</span>
+                </div>
+                <div class="sync-buttons" style="margin-top: 12px; display: flex; gap: 8px;">
+                    <button class="btn btn-secondary btn-sm" id="btn-save-archive" style="flex: 1;">
+                        <i class="fas fa-save"></i> 存档
+                    </button>
+                    <button class="btn btn-secondary btn-sm" id="btn-load-archive" style="flex: 1;">
+                        <i class="fas fa-folder-open"></i> 读档
+                    </button>
+                </div>
+                <button class="btn btn-secondary btn-sm" id="btn-open-settings" style="width: 100%; margin-top: 8px;">
+                    <i class="fas fa-cog"></i> AI设置
+                </button>
+                <div class="sync-status" style="margin-top: 8px; font-size: 11px; color: #666; text-align: center;">
+                    <span id="last-sync-time">未存档</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- 主内容区 -->
+        <main class="main-content">
+            <!-- 顶部栏 -->
+            <header class="top-bar">
+                <div class="top-bar-left">
+                    <h1 id="page-title">仪表盘</h1>
+                </div>
+                <div class="top-bar-right">
+                    <div class="user-info">
+                        <span id="user-name">学习者</span>
+                        <span class="streak-badge" id="streak-days">
+                            <i class="fas fa-fire"></i> 0天
+                        </span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- 页面内容容器 -->
+            <div class="content-area">
+
+                <!-- 仪表盘页面 -->
+                <div id="page-dashboard" class="page active">
+                    <div class="dashboard-grid-v2">
+                        <!-- 顶部统计栏 -->
+                        <div class="stats-bar">
+                            <div class="stat-item">
+                                <i class="fas fa-clock"></i>
+                                <div class="stat-content">
+                                    <span class="stat-value" id="total-hours">0</span>
+                                    <span class="stat-label">学习时长</span>
+                                </div>
+                            </div>
+                            <div class="stat-item">
+                                <i class="fas fa-check-circle"></i>
+                                <div class="stat-content">
+                                    <span class="stat-value" id="completed-tasks">0</span>
+                                    <span class="stat-label">完成任务</span>
+                                </div>
+                            </div>
+                            <div class="stat-item">
+                                <i class="fas fa-fire"></i>
+                                <div class="stat-content">
+                                    <span class="stat-value" id="streak-days">0天</span>
+                                    <span class="stat-label">连续学习</span>
+                                </div>
+                            </div>
+                            <div class="stat-item">
+                                <i class="fas fa-calendar-week"></i>
+                                <div class="stat-content">
+                                    <span class="stat-value">第<span id="current-week">1</span>周</span>
+                                    <span class="stat-label">当前进度</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 主内容区 -->
+                        <div class="dashboard-main">
+                            <!-- 左栏 -->
+                            <div class="dashboard-left">
+                                <!-- 今日任务 -->
+                                <div class="card today-tasks">
+                                    <div class="card-header">
+                                        <h2><i class="fas fa-tasks"></i> 今日任务</h2>
+                                        <span class="task-count" id="task-count">0/0</span>
+                                    </div>
+                                    <div class="card-body">
+                                        <div id="today-tasks-list" class="task-list"></div>
+                                    </div>
+                                </div>
+
+                                <!-- 学习热力图 -->
+                                <div class="card heatmap-card">
+                                    <div class="card-header">
+                                        <h2><i class="fas fa-fire-alt"></i> 学习热力图</h2>
+                                    </div>
+                                    <div class="card-body">
+                                        <div id="learning-heatmap" class="heatmap-container"></div>
+                                        <div class="heatmap-legend">
+                                            <span>少</span>
+                                            <div class="legend-scale">
+                                                <span class="level level-0"></span>
+                                                <span class="level level-1"></span>
+                                                <span class="level level-2"></span>
+                                                <span class="level level-3"></span>
+                                                <span class="level level-4"></span>
+                                            </div>
+                                            <span>多</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 中栏 -->
+                            <div class="dashboard-center">
+                                <!-- 番茄钟 -->
+                                <div class="card pomodoro-card">
+                                    <div class="card-header">
+                                        <h2><i class="fas fa-clock"></i> 番茄钟</h2>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="pomodoro-container">
+                                            <div class="pomodoro-timer" id="pomodoro-display">
+                                                <span id="timer-minutes">25</span>:<span id="timer-seconds">00</span>
+                                            </div>
+                                            <div class="pomodoro-controls">
+                                                <button class="btn btn-success" id="btn-start-pomodoro">
+                                                    <i class="fas fa-play"></i> 开始
+                                                </button>
+                                                <button class="btn btn-secondary" id="btn-pause-pomodoro" disabled>
+                                                    <i class="fas fa-pause"></i> 暂停
+                                                </button>
+                                                <button class="btn btn-danger" id="btn-reset-pomodoro">
+                                                    <i class="fas fa-redo"></i> 重置
+                                                </button>
+                                            </div>
+                                            <div class="pomodoro-settings">
+                                                <button class="time-preset active" data-minutes="25">25分钟</button>
+                                                <button class="time-preset" data-minutes="45">45分钟</button>
+                                                <button class="time-preset" data-minutes="60">60分钟</button>
+                                            </div>
+                                            <div class="pomodoro-stats">
+                                                <div class="pomo-stat">
+                                                    <span class="pomo-value" id="today-pomodoros">0</span>
+                                                    <span class="pomo-label">今日番茄</span>
+                                                </div>
+                                                <div class="pomo-stat">
+                                                    <span class="pomo-value" id="today-pomo-hours">0h</span>
+                                                    <span class="pomo-label">今日时长</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 本周进度 -->
+                                <div class="card weekly-progress">
+                                    <div class="card-header">
+                                        <h2><i class="fas fa-chart-pie"></i> 本周进度</h2>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="weekly-gauge" id="weekly-gauge">
+                                            <div class="gauge-header">
+                                                <span class="gauge-title">本周目标完成</span>
+                                                <span class="gauge-value" id="gauge-percent">0%</span>
+                                            </div>
+                                            <div class="gauge-bar">
+                                                <div class="gauge-fill" id="gauge-fill"></div>
+                                                <div class="gauge-markers">
+                                                    <span style="left: 0%">0h</span>
+                                                    <span style="left: 33%">5h</span>
+                                                    <span style="left: 66%">10h</span>
+                                                    <span style="left: 100%">15h</span>
+                                                </div>
+                                            </div>
+                                            <div class="gauge-status" id="gauge-status">继续努力！</div>
+                                        </div>
+                                        <div class="weekly-stats">
+                                            <div class="weekly-stat">
+                                                <span class="label">本周时长</span>
+                                                <span class="value" id="weekly-hours">0h</span>
+                                            </div>
+                                            <div class="weekly-stat">
+                                                <span class="label">目标时长</span>
+                                                <span class="value">15h</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 右栏 -->
+                            <div class="dashboard-right">
+                                <!-- 快速记录 -->
+                                <div class="card learning-log">
+                                    <div class="card-header">
+                                        <h2><i class="fas fa-plus-circle"></i> 快速记录</h2>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="log-form">
+                                            <div class="form-row">
+                                                <label>学习时长</label>
+                                                <div class="input-group">
+                                                    <input type="number" id="log-hours" placeholder="0.5" step="0.5" min="0">
+                                                    <span class="input-suffix">小时</span>
+                                                </div>
+                                            </div>
+                                            <div class="form-row">
+                                                <label>学习类型</label>
+                                                <select id="log-type">
+                                                    <option value="video">📺 视频教程</option>
+                                                    <option value="reading">📖 阅读文档</option>
+                                                    <option value="practice">💻 动手实践</option>
+                                                    <option value="project">🚀 做项目</option>
+                                                    <option value="exercise">✍️ 练习题</option>
+                                                    <option value="review">📝 复习总结</option>
+                                                </select>
+                                            </div>
+                                            <button class="btn btn-primary btn-block" id="btn-log-hours">
+                                                <i class="fas fa-plus"></i> 记录学习
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 技能雷达图 -->
+                                <div class="card skills-radar">
+                                    <div class="card-header">
+                                        <h2><i class="fas fa-bullseye"></i> 技能图谱</h2>
+                                    </div>
+                                    <div class="card-body">
+                                        <div id="skills-chart" class="radar-container"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 学习计划页面 -->
+                <div id="page-curriculum" class="page">
+                    <div class="curriculum-container">
+                        <!-- 阶段导航 -->
+                        <div class="phase-tabs">
+                            <button class="phase-tab active" data-phase="1">
+                                <span class="phase-num">1</span>
+                                <span class="phase-title">基础技能</span>
+                                <span class="phase-weeks">1-8周</span>
+                            </button>
+                            <button class="phase-tab" data-phase="2">
+                                <span class="phase-num">2</span>
+                                <span class="phase-title">核心技能</span>
+                                <span class="phase-weeks">9-16周</span>
+                            </button>
+                            <button class="phase-tab" data-phase="3">
+                                <span class="phase-num">3</span>
+                                <span class="phase-title">进阶项目</span>
+                                <span class="phase-weeks">17-20周</span>
+                            </button>
+                            <button class="phase-tab" data-phase="4">
+                                <span class="phase-num">4</span>
+                                <span class="phase-title">求职准备</span>
+                                <span class="phase-weeks">21-24周</span>
+                            </button>
+                        </div>
+
+                        <!-- 周次列表 -->
+                        <div class="weeks-container">
+                            <div id="weeks-list" class="weeks-list">
+                                <!-- 动态生成 -->
+                            </div>
+                        </div>
+
+                        <!-- 周详情模态框 -->
+                        <div id="week-detail-modal" class="modal">
+                            <div class="modal-content xlarge">
+                                <div class="modal-header">
+                                    <div class="modal-header-left">
+                                        <h2 id="modal-week-title">第X周学习内容</h2>
+                                        <span id="modal-difficulty" class="difficulty-badge"></span>
+                                    </div>
+                                    <button class="modal-close">&times;</button>
+                                </div>
+
+                                <!-- 周信息概览 -->
+                                <div class="week-overview-bar">
+                                    <div class="week-info-item">
+                                        <i class="fas fa-clock"></i>
+                                        <span id="modal-hours">学习时长</span>
+                                    </div>
+                                    <div class="week-info-item">
+                                        <i class="fas fa-layer-group"></i>
+                                        <span id="modal-phase">阶段</span>
+                                    </div>
+                                    <div class="week-info-item topics-preview">
+                                        <i class="fas fa-tags"></i>
+                                        <span id="modal-topics-preview">主题预览</span>
+                                    </div>
+                                </div>
+
+                                <!-- 标签页导航 -->
+                                <div class="detail-tabs-nav">
+                                    <button class="detail-tab-btn active" data-tab="overview">
+                                        <i class="fas fa-home"></i> 概览
+                                    </button>
+                                    <button class="detail-tab-btn" data-tab="cognitive">
+                                        <i class="fas fa-brain"></i> 认知目标
+                                    </button>
+                                    <button class="detail-tab-btn" data-tab="scenario">
+                                        <i class="fas fa-briefcase"></i> 场景实践
+                                    </button>
+                                    <button class="detail-tab-btn" data-tab="tasks">
+                                        <i class="fas fa-tasks"></i> 任务清单
+                                    </button>
+                                    <button class="detail-tab-btn" data-tab="papers">
+                                        <i class="fas fa-file-alt"></i> 论文案例
+                                    </button>
+                                    <button class="detail-tab-btn" data-tab="helper">
+                                        <i class="fas fa-robot"></i> AI助教
+                                    </button>
+                                </div>
+
+                                <div class="modal-body" id="modal-week-body">
+                                    <!-- 概览标签页 -->
+                                    <div class="detail-tab-panel active" id="tab-overview">
+                                        <!-- 生物学背景 -->
+                                        <div class="content-section" id="biological-context-section">
+                                            <div class="section-header">
+                                                <h3><i class="fas fa-dna"></i> 生物学背景</h3>
+                                                <span class="section-badge">Content</span>
+                                            </div>
+                                            <div id="modal-biological-context" class="section-content"></div>
+                                        </div>
+
+                                        <!-- 学习内容 -->
+                                        <div class="content-section">
+                                            <div class="section-header">
+                                                <h3><i class="fas fa-book-open"></i> 学习内容</h3>
+                                            </div>
+                                            <div id="modal-topics" class="topics-grid"></div>
+                                        </div>
+
+                                        <!-- 学习资源 -->
+                                        <div class="content-section">
+                                            <div class="section-header">
+                                                <h3><i class="fas fa-link"></i> 学习资源</h3>
+                                            </div>
+                                            <div id="modal-resources" class="resources-grid"></div>
+                                        </div>
+
+                                        <!-- 学习反思 -->
+                                        <div class="content-section" id="metacognition-section">
+                                            <div class="section-header">
+                                                <h3><i class="fas fa-lightbulb"></i> 学习反思</h3>
+                                                <span class="section-badge meta">Metacognition</span>
+                                            </div>
+                                            <div id="modal-metacognition" class="section-content"></div>
+                                        </div>
+                                    </div>
+
+                                    <!-- 认知目标标签页 -->
+                                    <div class="detail-tab-panel" id="tab-cognitive">
+                                        <div class="content-section" id="cognitive-dimension-section">
+                                            <div class="section-header">
+                                                <h3><i class="fas fa-brain"></i> 布鲁姆认知层级</h3>
+                                                <span class="section-badge cognitive">Cognitive</span>
+                                            </div>
+                                            <div id="modal-cognitive-levels" class="section-content"></div>
+                                        </div>
+                                    </div>
+
+                                    <!-- 场景实践标签页 -->
+                                    <div class="detail-tab-panel" id="tab-scenario">
+                                        <!-- 情境模拟 -->
+                                        <div class="content-section" id="scenario-section">
+                                            <div class="section-header">
+                                                <h3><i class="fas fa-briefcase"></i> 真实场景模拟</h3>
+                                                <span class="section-badge context">Contextual</span>
+                                            </div>
+                                            <div id="modal-scenario" class="section-content"></div>
+                                        </div>
+
+                                        <!-- 协作学习 -->
+                                        <div class="content-section" id="collaboration-section">
+                                            <div class="section-header">
+                                                <h3><i class="fas fa-users"></i> 协作学习</h3>
+                                                <span class="section-badge collab">Collaborative</span>
+                                            </div>
+                                            <div id="modal-collaboration" class="section-content"></div>
+                                        </div>
+                                    </div>
+
+                                    <!-- 任务清单标签页 -->
+                                    <div class="detail-tab-panel" id="tab-tasks">
+                                        <div class="content-section">
+                                            <div class="section-header">
+                                                <h3><i class="fas fa-tasks"></i> 任务清单</h3>
+                                                <span class="task-count" id="task-count-badge">0 个任务</span>
+                                            </div>
+                                            <div id="modal-tasks-detail" class="tasks-list-v2"></div>
+                                        </div>
+
+                                        <!-- 代码示例 -->
+                                        <div class="content-section">
+                                            <div class="section-header">
+                                                <h3><i class="fas fa-code"></i> 代码示例</h3>
+                                            </div>
+                                            <div id="modal-code-examples" class="section-content"></div>
+                                        </div>
+                                    </div>
+
+                                    <!-- 论文案例标签页 -->
+                                    <div class="detail-tab-panel" id="tab-papers">
+                                        <div class="content-section" id="case-studies-section">
+                                            <div class="section-header">
+                                                <h3><i class="fas fa-file-alt"></i> 相关论文案例</h3>
+                                            </div>
+                                            <div id="modal-case-studies" class="section-content"></div>
+                                        </div>
+                                    </div>
+
+                                    <!-- AI助教标签页 -->
+                                    <div class="detail-tab-panel" id="tab-helper">
+                                        <div class="helper-layout">
+                                            <div class="helper-main">
+                                                <div class="content-section">
+                                                    <div class="section-header">
+                                                        <h3><i class="fas fa-robot"></i> AI 助教</h3>
+                                                    </div>
+                                                    <div class="ai-chat-container-v2">
+                                                        <div id="ai-chat-messages" class="ai-messages-v2"></div>
+                                                        <div class="ai-input-area-v2">
+                                                            <textarea id="ai-question-input" placeholder="输入你的问题..."></textarea>
+                                                            <div class="ai-actions-v2">
+                                                                <select id="ai-question-type">
+                                                                    <option value="concept">概念解释</option>
+                                                                    <option value="code">代码帮助</option>
+                                                                    <option value="debug">代码纠错</option>
+                                                                    <option value="resource">资源推荐</option>
+                                                                </select>
+                                                                <button class="btn btn-primary" id="btn-ask-ai">
+                                                                    <i class="fas fa-paper-plane"></i> 提问
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="helper-side">
+                                                <div class="content-section">
+                                                    <div class="section-header">
+                                                        <h3><i class="fas fa-file-alt"></i> 提交作业</h3>
+                                                    </div>
+                                                    <div class="homework-area">
+                                                        <div class="homework-tabs">
+                                                            <button class="hw-tab active" data-type="code">代码</button>
+                                                            <button class="hw-tab" data-type="report">报告</button>
+                                                            <button class="hw-tab" data-type="notes">笔记</button>
+                                                        </div>
+                                                        <textarea id="homework-content" placeholder="粘贴你的代码或作业内容..."></textarea>
+                                                        <button class="btn btn-success btn-block" id="btn-submit-homework">
+                                                            <i class="fas fa-check"></i> 提交批改
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                <!-- AI批改结果 -->
+                                                <div class="content-section" id="review-result" style="display: none;">
+                                                    <div class="section-header">
+                                                        <h3><i class="fas fa-comment-dots"></i> 批改结果</h3>
+                                                    </div>
+                                                    <div id="review-content" class="review-content"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 学习进度页面 -->
+                <div id="page-progress" class="page">
+                    <div class="progress-container">
+                        <!-- 总体进度 -->
+                        <div class="card overall-progress">
+                            <div class="card-header">
+                                <h2><i class="fas fa-road"></i> 学习旅程</h2>
+                            </div>
+                            <div class="card-body">
+                                <div class="journey-timeline" id="journey-timeline">
+                                    <!-- 动态生成 -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 成就进度预览 -->
+                        <!-- 学习类型统计 -->
+                        <div class="card learning-types-card">
+                            <div class="card-header">
+                                <h2><i class="fas fa-chart-pie"></i> 学习类型分布</h2>
+                            </div>
+                            <div class="card-body">
+                                <div class="learning-types-grid" id="learning-types-grid">
+                                    <div class="type-item">
+                                        <div class="type-icon">📺</div>
+                                        <div class="type-info">
+                                            <div class="type-name">看视频教程</div>
+                                            <div class="type-bar"><div class="type-fill" style="width: 0%"></div></div>
+                                            <div class="type-stats"><span class="type-hours">0h</span> · <span class="type-sessions">0次</span></div>
+                                        </div>
+                                    </div>
+                                    <div class="type-item">
+                                        <div class="type-icon">📖</div>
+                                        <div class="type-info">
+                                            <div class="type-name">阅读文档/书籍</div>
+                                            <div class="type-bar"><div class="type-fill" style="width: 0%"></div></div>
+                                            <div class="type-stats"><span class="type-hours">0h</span> · <span class="type-sessions">0次</span></div>
+                                        </div>
+                                    </div>
+                                    <div class="type-item">
+                                        <div class="type-icon">💻</div>
+                                        <div class="type-info">
+                                            <div class="type-name">动手实践</div>
+                                            <div class="type-bar"><div class="type-fill" style="width: 0%"></div></div>
+                                            <div class="type-stats"><span class="type-hours">0h</span> · <span class="type-sessions">0次</span></div>
+                                        </div>
+                                    </div>
+                                    <div class="type-item">
+                                        <div class="type-icon">🚀</div>
+                                        <div class="type-info">
+                                            <div class="type-name">做项目</div>
+                                            <div class="type-bar"><div class="type-fill" style="width: 0%"></div></div>
+                                            <div class="type-stats"><span class="type-hours">0h</span> · <span class="type-sessions">0次</span></div>
+                                        </div>
+                                    </div>
+                                    <div class="type-item">
+                                        <div class="type-icon">✍️</div>
+                                        <div class="type-info">
+                                            <div class="type-name">做练习题</div>
+                                            <div class="type-bar"><div class="type-fill" style="width: 0%"></div></div>
+                                            <div class="type-stats"><span class="type-hours">0h</span> · <span class="type-sessions">0次</span></div>
+                                        </div>
+                                    </div>
+                                    <div class="type-item">
+                                        <div class="type-icon">📝</div>
+                                        <div class="type-info">
+                                            <div class="type-name">复习总结</div>
+                                            <div class="type-bar"><div class="type-fill" style="width: 0%"></div></div>
+                                            <div class="type-stats"><span class="type-hours">0h</span> · <span class="type-sessions">0次</span></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 学习时长图表 -->
+                        <div class="card hours-chart">
+                            <div class="card-header">
+                                <h2><i class="fas fa-chart-bar"></i> 学习时长统计</h2>
+                            </div>
+                            <div class="card-body">
+                                <div id="hours-bar-chart" class="chart-container"></div>
+                            </div>
+                        </div>
+
+                        <!-- 任务完成情况 -->
+                        <div class="card task-completion">
+                            <div class="card-header">
+                                <h2><i class="fas fa-list-check"></i> 任务完成情况</h2>
+                            </div>
+                            <div class="card-body">
+                                <div id="task-list-full" class="task-tree">
+                                    <!-- 动态生成 -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 面试准备页面 -->
+                <div id="page-interview" class="page">
+                    <div class="interview-container">
+                        <!-- 题目分类 -->
+                        <div class="category-sidebar">
+                            <h3>题目分类</h3>
+                            <div id="interview-categories" class="category-list">
+                                <!-- 动态生成 -->
+                            </div>
+                        </div>
+
+                        <!-- 题目内容 -->
+                        <div class="question-area">
+                            <div class="question-header">
+                                <span class="question-category" id="q-category">RNA-seq</span>
+                                <span class="question-progress" id="q-progress">1/5</span>
+                            </div>
+
+                            <div class="question-content" id="question-content">
+                                <p class="question-text" id="q-text">点击左侧分类开始练习</p>
+                            </div>
+
+                            <div class="answer-area" id="answer-area">
+                                <div class="answer-hidden">
+                                    <button class="btn btn-secondary" id="btn-show-answer">
+                                        <i class="fas fa-eye"></i> 显示答案
+                                    </button>
+                                </div>
+                                <div class="answer-visible" style="display: none;">
+                                    <div class="answer-text" id="a-text"></div>
+                                    <div class="answer-actions">
+                                        <button class="btn btn-success" id="btn-next-question">
+                                            <i class="fas fa-arrow-right"></i> 下一题
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 技能面板页面 -->
+                <div id="page-skills" class="page">
+                    <div class="skills-container">
+                        <!-- 角色信息卡片 -->
+                        <div class="character-card">
+                            <div class="character-avatar">
+                                <div class="avatar-frame">
+                                    <i class="fas fa-user-astronaut"></i>
+                                </div>
+                                <div class="level-badge" id="char-level">Lv.1</div>
+                            </div>
+                            <div class="character-info">
+                                <div class="char-name" id="char-name">生信学徒</div>
+                                <div class="char-title" id="char-title">生信小白</div>
+                                <div class="exp-bar">
+                                    <div class="exp-fill" id="total-exp-fill"></div>
+                                    <span class="exp-text" id="total-exp-text">0 / 100 EXP</span>
+                                </div>
+                            </div>
+                            <div class="char-stats">
+                                <div class="stat">
+                                    <i class="fas fa-clock"></i>
+                                    <span id="stat-hours">0h</span>
+                                </div>
+                                <div class="stat">
+                                    <i class="fas fa-check"></i>
+                                    <span id="stat-tasks">0</span>
+                                </div>
+                                <div class="stat">
+                                    <i class="fas fa-folder"></i>
+                                    <span id="stat-projects">0</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 技能分类 -->
+                        <div class="skill-categories">
+                            <button class="skill-cat-btn active" data-category="all">全部</button>
+                            <button class="skill-cat-btn" data-category="基础">基础</button>
+                            <button class="skill-cat-btn" data-category="核心">核心</button>
+                            <button class="skill-cat-btn" data-category="分析">分析</button>
+                            <button class="skill-cat-btn" data-category="进阶">进阶</button>
+                        </div>
+
+                        <!-- 技能列表 -->
+                        <div class="skills-grid" id="skills-grid">
+                            <!-- 动态生成 -->
+                        </div>
+
+                        <!-- 任务日志 -->
+                        <div class="card task-log-card" style="margin-top: 24px;">
+                            <div class="card-header">
+                                <h2><i class="fas fa-scroll"></i> 任务日志</h2>
+                            </div>
+                            <div class="card-body">
+                                <div id="task-log-list" class="task-log">
+                                    <!-- 动态生成 -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 技能课程模态框 -->
+                <div id="skill-courses-modal" class="modal">
+                    <div class="modal-content large">
+                        <div class="modal-header">
+                            <h2 id="skill-courses-title">技能相关课程</h2>
+                            <button class="modal-close">&times;</button>
+                        </div>
+                        <div class="modal-body" id="skill-courses-content">
+                            <!-- 动态生成课程列表 -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 资源中心页面 -->
+                <div id="page-reference" class="page">
+                    <div class="resource-center">
+                        <!-- 搜索栏 -->
+                        <div class="resource-search-bar">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="resource-search" placeholder="搜索概念、工具、数据库、文件格式...">
+                        </div>
+
+                        <!-- 资源分类导航 -->
+                        <div class="resource-categories">
+                            <div class="resource-category-card" data-type="concepts">
+                                <div class="category-icon blue"><i class="fas fa-lightbulb"></i></div>
+                                <div class="category-info">
+                                    <h3>核心概念</h3>
+                                    <p>生信分析中的关键概念和术语</p>
+                                    <span class="category-count" id="concepts-count">0 个</span>
+                                </div>
+                            </div>
+                            <div class="resource-category-card" data-type="tools">
+                                <div class="category-icon green"><i class="fas fa-tools"></i></div>
+                                <div class="category-info">
+                                    <h3>常用工具</h3>
+                                    <p>数据处理和分析软件工具</p>
+                                    <span class="category-count" id="tools-count">0 个</span>
+                                </div>
+                            </div>
+                            <div class="resource-category-card" data-type="databases">
+                                <div class="category-icon purple"><i class="fas fa-database"></i></div>
+                                <div class="category-info">
+                                    <h3>公共数据库</h3>
+                                    <p>基因组、转录组等数据资源</p>
+                                    <span class="category-count" id="databases-count">0 个</span>
+                                </div>
+                            </div>
+                            <div class="resource-category-card" data-type="formats">
+                                <div class="category-icon orange"><i class="fas fa-file-code"></i></div>
+                                <div class="category-info">
+                                    <h3>文件格式</h3>
+                                    <p>生信常见数据文件格式</p>
+                                    <span class="category-count" id="formats-count">0 个</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 资源内容区 -->
+                        <div class="resource-content-area">
+                            <div class="resource-header">
+                                <h2 id="resource-section-title">全部资源</h2>
+                                <div class="resource-filter">
+                                    <button class="filter-btn active" data-filter="all">全部</button>
+                                    <button class="filter-btn" data-filter="common">常用</button>
+                                    <button class="filter-btn" data-filter="recent">最近使用</button>
+                                </div>
+                            </div>
+
+                            <!-- 概念卡片 -->
+                            <div class="resource-section" id="concepts-section">
+                                <div class="section-title-bar">
+                                    <h3><i class="fas fa-lightbulb"></i> 核心概念</h3>
+                                    <button class="expand-btn" data-section="concepts">展开全部 <i class="fas fa-chevron-down"></i></button>
+                                </div>
+                                <div class="resource-cards" id="concepts-list">
+                                    <!-- 动态生成 -->
+                                </div>
+                            </div>
+
+                            <!-- 工具卡片 -->
+                            <div class="resource-section" id="tools-section">
+                                <div class="section-title-bar">
+                                    <h3><i class="fas fa-tools"></i> 常用工具</h3>
+                                    <button class="expand-btn" data-section="tools">展开全部 <i class="fas fa-chevron-down"></i></button>
+                                </div>
+                                <div class="resource-cards" id="tools-list">
+                                    <!-- 动态生成 -->
+                                </div>
+                            </div>
+
+                            <!-- 数据库卡片 -->
+                            <div class="resource-section" id="databases-section">
+                                <div class="section-title-bar">
+                                    <h3><i class="fas fa-database"></i> 公共数据库</h3>
+                                    <button class="expand-btn" data-section="databases">展开全部 <i class="fas fa-chevron-down"></i></button>
+                                </div>
+                                <div class="resource-cards" id="databases-list">
+                                    <!-- 动态生成 -->
+                                </div>
+                            </div>
+
+                            <!-- 文件格式卡片 -->
+                            <div class="resource-section" id="formats-section">
+                                <div class="section-title-bar">
+                                    <h3><i class="fas fa-file-code"></i> 文件格式</h3>
+                                    <button class="expand-btn" data-section="formats">展开全部 <i class="fas fa-chevron-down"></i></button>
+                                </div>
+                                <div class="resource-cards" id="formats-list">
+                                    <!-- 动态生成 -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Toast 通知 -->
+    <div id="toast-container"></div>
+
+    <!-- AI设置模态框 -->
+    <div id="ai-settings-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-robot"></i> AI 助教设置</h2>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>AI 服务商</label>
+                    <select id="ai-provider">
+                        <option value="anthropic">Anthropic (Claude)</option>
+                        <option value="openai">OpenAI (GPT)</option>
+                        <option value="custom">自定义 API</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>API 密钥</label>
+                    <input type="password" id="ai-api-key" placeholder="输入你的API密钥">
+                    <small class="form-hint">你的密钥只保存在本地浏览器，不会上传到任何服务器</small>
+                </div>
+                <div class="form-group" id="custom-url-group" style="display: none;">
+                    <label>自定义 API 地址</label>
+                    <input type="text" id="ai-base-url" placeholder="https://your-api-endpoint">
+                </div>
+                <div class="form-group">
+                    <label>模型选择</label>
+                    <input type="text" id="ai-model" list="model-list" placeholder="选择或输入模型名称" class="model-input">
+                    <datalist id="model-list">
+                        <option value="claude-sonnet-4-20250514">Claude Sonnet 4 (最新)</option>
+                        <option value="claude-opus-4-20250514">Claude Opus 4</option>
+                        <option value="claude-3-5-sonnet-20241022">Claude 3.5 Sonnet</option>
+                        <option value="claude-3-5-haiku-20241022">Claude 3.5 Haiku</option>
+                        <option value="claude-3-opus-20240229">Claude 3 Opus</option>
+                        <option value="claude-3-sonnet-20240229">Claude 3 Sonnet</option>
+                        <option value="claude-3-haiku-20240307">Claude 3 Haiku</option>
+                        <option value="gpt-4o">GPT-4o</option>
+                        <option value="gpt-4o-mini">GPT-4o Mini</option>
+                        <option value="gpt-4-turbo">GPT-4 Turbo</option>
+                        <option value="gpt-4">GPT-4</option>
+                        <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
+                        <option value="o1-preview">o1 Preview</option>
+                        <option value="o1-mini">o1 Mini</option>
+                        <option value="gemini-1.5-pro">Gemini 1.5 Pro</option>
+                        <option value="gemini-1.5-flash">Gemini 1.5 Flash</option>
+                        <option value="deepseek-chat">DeepSeek Chat</option>
+                        <option value="deepseek-coder">DeepSeek Coder</option>
+                    </datalist>
+                    <small class="form-hint">可从列表选择或直接输入任意模型名称</small>
+                </div>
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="ai-enabled">
+                        <span>启用 AI 助教功能</span>
+                    </label>
+                </div>
+                <div class="ai-info-box">
+                    <h4>📌 使用说明</h4>
+                    <ul>
+                        <li>使用AI功能需要配置你自己的API密钥</li>
+                        <li><a href="https://console.anthropic.com/" target="_blank">获取 Anthropic API 密钥</a></li>
+                        <li><a href="https://platform.openai.com/api-keys" target="_blank">获取 OpenAI API 密钥</a></li>
+                        <li>AI可以帮你：解释概念、调试代码、批改作业</li>
+                    </ul>
+                </div>
+                <button class="btn btn-primary btn-full" id="btn-save-ai-settings">
+                    <i class="fas fa-save"></i> 保存设置
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/data.js"></script>
+    <script src="js/rpg_system.js"></script>
+    <script src="js/ai_helper.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

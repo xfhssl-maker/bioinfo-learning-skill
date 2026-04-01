@@ -1,0 +1,58 @@
+{
+  "version": "1.0",
+  "last_sync": null,
+  "user": {
+    "name": "",
+    "github": "",
+    "blog": "",
+    "start_date": null,
+    "current_week": 1,
+    "current_phase": 1
+  },
+  "settings": {
+    "daily_hours_target": 2.5,
+    "weekly_hours_target": 15,
+    "remind_time": "20:00"
+  },
+  "progress": {
+    "total_hours": 0,
+    "total_exp": 0,
+    "completed_tasks": [],
+    "completed_projects": [],
+    "blog_posts": []
+  },
+  "weekly_log": {},
+  "learning_types": {
+    "video": { "hours": 0, "sessions": 0, "label": "📺 看视频教程" },
+    "reading": { "hours": 0, "sessions": 0, "label": "📖 阅读文档/书籍" },
+    "practice": { "hours": 0, "sessions": 0, "label": "💻 动手实践" },
+    "project": { "hours": 0, "sessions": 0, "label": "🚀 做项目" },
+    "exercise": { "hours": 0, "sessions": 0, "label": "✍️ 做练习题" },
+    "review": { "hours": 0, "sessions": 0, "label": "📝 复习总结" }
+  },
+  "pomodoro": {
+    "total_count": 0,
+    "total_minutes": 0,
+    "history": {}
+  },
+  "skills": {
+    "linux": { "level": 1, "exp": 0, "hours": 0 },
+    "shell": { "level": 1, "exp": 0, "hours": 0 },
+    "r_lang": { "level": 1, "exp": 0, "hours": 0 },
+    "python": { "level": 1, "exp": 0, "hours": 0 },
+    "rna_seq": { "level": 1, "exp": 0, "hours": 0 },
+    "wes": { "level": 1, "exp": 0, "hours": 0 },
+    "chip_seq": { "level": 1, "exp": 0, "hours": 0 },
+    "scrna": { "level": 1, "exp": 0, "hours": 0 },
+    "data_mining": { "level": 1, "exp": 0, "hours": 0 }
+  },
+  "achievements": {
+    "unlocked": [],
+    "current_title": "生信小白"
+  },
+  "interview_progress": {
+    "practiced_questions": [],
+    "weak_areas": []
+  },
+  "notes": []
+}

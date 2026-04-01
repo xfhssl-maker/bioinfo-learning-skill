@@ -1,0 +1,103 @@
+{
+  "weeks": [
+    {
+      "week": 13,
+      "title": "ChIP-seq分析（上）",
+      "difficulty": "★★★☆☆",
+      "biological_context": {
+        "why": "ChIP-seq用于研究蛋白质-DNA相互作用，是表观遗传学的核心技术",
+        "real_scenario": "转录因子结合位点鉴定、组蛋白修饰研究",
+        "industry_standard": "MACS2是Peak calling的标准工具"
+      },
+      "cognitive_dimension": {
+        "bloom_levels": {
+          "remember": ["列出ChIP-seq分析步骤", "说出Peak的定义"],
+          "understand": ["解释ChIP-seq的原理", "说明Input对照的作用"],
+          "apply": ["运行MACS2 Peak calling"],
+          "analyze": ["分析Peak的质量"]
+        }
+      },
+      "contextual_dimension": {
+        "real_scenario": {
+          "title": "场景：转录因子结合位点分析",
+          "tasks": [
+            "质控和比对",
+            "运行MACS2 Peak calling",
+            "评估Peak质量"
+          ]
+        },
+        "role": "初级分析师"
+      }
+    },
+    {
+      "week": 14,
+      "title": "ChIP-seq分析（下）",
+      "difficulty": "★★★☆☆",
+      "contextual_dimension": {
+        "real_scenario": {
+          "title": "场景：Peak注释和Motif分析",
+          "tasks": [
+            "Peak注释（ChIPseeker）",
+            "绘制Peak分布图",
+            "Motif分析",
+            "功能富集分析"
+          ]
+        }
+      }
+    },
+    {
+      "week": 15,
+      "title": "GEO数据挖掘",
+      "difficulty": "★★★☆☆",
+      "biological_context": {
+        "why": "GEO有100万+数据集，是科研的宝库，学会挖掘可以快速发表论文",
+        "real_scenario": "Meta分析、数据复用、假设验证",
+        "industry_standard": "GEOquery是访问GEO的标准R包"
+      },
+      "cognitive_dimension": {
+        "bloom_levels": {
+          "understand": ["理解GEO数据库结构"],
+          "apply": ["下载和分析GEO数据"],
+          "analyze": ["整合多个数据集"],
+          "create": ["设计数据挖掘方案"]
+        }
+      },
+      "contextual_dimension": {
+        "real_scenario": {
+          "title": "场景：肺癌相关基因挖掘",
+          "tasks": [
+            "搜索肺癌相关数据集",
+            "下载表达数据",
+            "差异分析",
+            "富集分析",
+            "生存分析"
+          ]
+        },
+        "role": "初级分析师"
+      }
+    },
+    {
+      "week": 16,
+      "title": "TCGA数据挖掘",
+      "difficulty": "★★★☆☆",
+      "biological_context": {
+        "why": "TCGA是最大的癌症基因组数据库，包含多组学数据",
+        "real_scenario": "癌症研究、生物标志物发现",
+        "industry_standard": "TCGAbiolinks是访问TCGA的标准工具"
+      },
+      "contextual_dimension": {
+        "real_scenario": {
+          "title": "场景：肺腺癌多组学分析",
+          "tasks": [
+            "下载TCGA-LUAD数据",
+            "表达数据分析",
+            "突变数据分析",
+            "生存分析",
+            "整合分析报告"
+          ]
+        },
+        "role": "初级分析师"
+      }
+    }
+  ]
+}

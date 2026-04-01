@@ -1,0 +1,75 @@
+{
+  "exercises": [
+    {
+      "id": "ex001",
+      "week": 1,
+      "category": "Linux基础",
+      "difficulty": "★☆☆☆☆",
+      "cognitive_level": "apply",
+      "question": "如何统计一个FASTQ文件中有多少条序列？",
+      "options": [
+        "wc -l file.fastq",
+        "wc -l file.fastq / 4",
+        "grep -c '^@' file.fastq",
+        "cat file.fastq | wc -l"
+      ],
+      "answer": 1,
+      "explanation": "FASTQ格式每条序列占4行，所以总行数除以4即为序列数。选项B的命令应该是 $(wc -l < file.fastq) / 4 或使用 echo $(($(wc -l < file.fastq)/4))",
+      "correct_command": "echo $(($(wc -l < file.fastq)/4))"
+    },
+    {
+      "id": "ex002",
+      "week": 1,
+      "category": "Linux基础",
+      "difficulty": "★☆☆☆☆",
+      "cognitive_level": "apply",
+      "question": "如何提取FASTA文件中所有序列ID（以>开头的行）？",
+      "options": [
+        "grep '>' file.fasta",
+        "grep '^>' file.fasta",
+        "awk '/^>/' file.fasta",
+        "以上都对"
+      ],
+      "answer": 3,
+      "explanation": "选项A、B、C都能提取以>开头的行。^表示行首，更精确。"
+    },
+    {
+      "id": "ex003",
+      "week": 2,
+      "category": "Shell脚本",
+      "difficulty": "★★☆☆☆",
+      "cognitive_level": "create",
+      "question": "编写脚本批量重命名文件，将所有.txt文件改为.bak",
+      "type": "coding",
+      "answer": "for f in *.txt; do mv \"$f\" \"${f%.txt}.bak\"; done",
+      "explanation": "${f%.txt}表示去掉.txt后缀"
+    },
+    {
+      "id": "ex004",
+      "week": 9,
+      "category": "RNA-seq",
+      "difficulty": "★★★☆☆",
+      "cognitive_level": "analyze",
+      "question": "差异分析中，为什么要用FDR而不是p-value？",
+      "type": "text",
+      "answer": "因为基因组学涉及数万次检验，直接用p<0.05会产生大量假阳性。FDR通过多重检验校正控制错误发现率。",
+      "keywords": ["多重检验", "假阳性", "校正"]
+    },
+    {
+      "id": "ex005",
+      "week": 9,
+      "category": "RNA-seq",
+      "difficulty": "★★★☆☆",
+      "cognitive_level": "evaluate",
+      "question": "某差异分析结果：20000个基因，1000个padj<0.05。预期有多少假阳性？",
+      "options": [
+        "50个",
+        "100个",
+        "1000个",
+        "无法确定"
+      ],
+      "answer": 0,
+      "explanation": "FDR=0.05表示在1000个显著基因中，预期有5%即50个是假阳性"
+    }
+  ]
+}

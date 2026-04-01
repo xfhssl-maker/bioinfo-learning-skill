@@ -1,0 +1,96 @@
+{
+  "weeks": [
+    {
+      "week": 21,
+      "title": "简历准备",
+      "difficulty": "★★★☆☆",
+      "biological_context": {
+        "why": "简历是求职的敲门砖，需要突出项目经验和技能",
+        "real_scenario": "投递生信分析师岗位",
+        "industry_standard": "技术简历要突出：技能、项目、成果"
+      },
+      "cognitive_dimension": {
+        "bloom_levels": {
+          "analyze": ["分析岗位要求", "匹配自身技能"],
+          "evaluate": ["评估简历质量", "优化简历内容"],
+          "create": ["撰写技术简历", "准备项目描述"]
+        }
+      },
+      "contextual_dimension": {
+        "real_scenario": {
+          "title": "场景：准备生信分析师简历",
+          "tasks": [
+            "分析目标岗位的技能要求",
+            "撰写中英文简历",
+            "准备6个项目的详细描述",
+            "列出技能清单（Linux/R/Python/工具）",
+            "准备3分钟自我介绍"
+          ]
+        },
+        "role": "求职者"
+      }
+    },
+    {
+      "week": 22,
+      "title": "面试准备",
+      "difficulty": "★★★☆☆",
+      "cognitive_dimension": {
+        "bloom_levels": {
+          "remember": ["整理常见面试题"],
+          "understand": ["理解面试考察点"],
+          "apply": ["准备技术问题回答"],
+          "create": ["设计项目讲解方案"]
+        }
+      },
+      "contextual_dimension": {
+        "real_scenario": {
+          "title": "场景：准备技术面试",
+          "tasks": [
+            "整理50个常见面试题",
+            "准备项目讲解（每个5分钟）",
+            "复习统计学基础",
+            "准备提问环节的问题",
+            "模拟面试练习"
+          ]
+        },
+        "role": "求职者"
+      }
+    },
+    {
+      "week": 23,
+      "title": "投递简历",
+      "difficulty": "★★☆☆☆",
+      "contextual_dimension": {
+        "real_scenario": {
+          "title": "场景：批量投递简历",
+          "tasks": [
+            "筛选目标公司和岗位",
+            "每天投递5-10份简历",
+            "记录投递情况",
+            "跟进面试邀请",
+            "准备针对性材料"
+          ]
+        },
+        "role": "求职者"
+      }
+    },
+    {
+      "week": 24,
+      "title": "面试与Offer",
+      "difficulty": "★★★☆☆",
+      "contextual_dimension": {
+        "real_scenario": {
+          "title": "场景：参加面试并评估Offer",
+          "tasks": [
+            "面试前复习公司业务",
+            "准备针对性问题",
+            "面试后总结经验",
+            "评估Offer（薪资/发展/团队）",
+            "做出选择"
+          ]
+        },
+        "role": "求职者"
+      }
+    }
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "exercises_extended": [
+    {
+      "id": "ex006",
+      "week": 3,
+      "category": "R语言",
+      "difficulty": "★★☆☆☆",
+      "question": "如何读取CSV文件并查看前6行？",
+      "type": "coding",
+      "answer": "data <- read.csv('file.csv')\nhead(data)"
+    },
+    {
+      "id": "ex007",
+      "week": 5,
+      "category": "Python",
+      "difficulty": "★★☆☆☆",
+      "question": "如何计算序列的GC含量？",
+      "type": "coding",
+      "answer": "def gc_content(seq):\n    gc = seq.count('G') + seq.count('C')\n    return gc / len(seq) * 100"
+    },
+    {
+      "id": "ex008",
+      "week": 4,
+      "category": "R语言",
+      "difficulty": "★★☆☆☆",
+      "question": "使用dplyr筛选表达量>100的基因",
+      "type": "coding",
+      "answer": "library(dplyr)\ndata %>% filter(expression > 100)"
+    },
+    {
+      "id": "ex009",
+      "week": 11,
+      "category": "变异检测",
+      "difficulty": "★★★★☆",
+      "question": "VCF文件中QUAL字段表示什么？",
+      "options": [
+        "变异的质量分数",
+        "测序深度",
+        "等位基因频率",
+        "基因型质量"
+      ],
+      "answer": 0,
+      "explanation": "QUAL是Phred质量分数，表示该位点存在变异的置信度"
+    },
+    {
+      "id": "ex010",
+      "week": 17,
+      "category": "单细胞",
+      "difficulty": "★★★★☆",
+      "question": "单细胞分析中为什么要过滤线粒体基因比例高的细胞？",
+      "options": [
+        "线粒体基因不重要",
+        "表示细胞质量差或死亡",
+        "线粒体基因太多",
+        "技术原因"
+      ],
+      "answer": 1,
+      "explanation": "高线粒体基因比例通常表示细胞膜破裂，细胞质mRNA流失，是低质量细胞的标志"
+    }
+  ]
+}

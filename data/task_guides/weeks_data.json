@@ -1,0 +1,49 @@
+{
+  "weeks": {
+    "2": {
+      "title": "Linux进阶 + Shell脚本",
+      "bio": "生信分析需要批量处理数据，Shell脚本可以自动化重复任务",
+      "scenario": "批量处理50个样本的质控报告，2小时内完成",
+      "tasks": [
+        {
+          "title": "学习grep/awk/sed",
+          "guide": "grep: 搜索文本\n  grep '^>' file.fasta  # 提取序列ID\n\nawk: 处理列数据\n  awk '{print $1,$3}' file.txt  # 打印第1和第3列\n\nsed: 文本替换\n  sed 's/old/new/g' file.txt  # 替换文本"
+        },
+        {
+          "title": "编写批量处理脚本",
+          "guide": "for循环批量处理：\nfor f in *.fastq; do\n  echo \"Processing $f\"\n  wc -l \"$f\"\ndone\n\n统计所有FASTQ序列数：\nfor f in *.fastq; do\n  count=$(($(wc -l < \"$f\")/4))\n  echo \"$f: $count reads\"\ndone > summary.txt"
+        }
+      ]
+    },
+    "7": {
+      "title": "Conda环境管理 + 工具安装",
+      "bio": "生信工具依赖复杂，Conda是解决依赖地狱的标准方案",
+      "scenario": "配置完整的RNA-seq分析环境",
+      "tasks": [
+        {
+          "title": "创建生信环境",
+          "guide": "创建环境：\nconda create -n bioinfo python=3.11 -y\n\n激活环境：\nconda activate bioinfo\n\n安装工具：\nconda install -c bioconda fastqc hisat2 samtools -y"
+        },
+        {
+          "title": "一键安装所有工具",
+          "guide": "使用提供的安装脚本：\n\nWindows:\n  打开Anaconda Prompt\n  cd E:\\OpenCode\\bioinfo-learning-skill\\scripts\n  .\\install_bioinfo_tools.ps1\n\nLinux/Mac:\n  cd ~/bioinfo-learning-skill/scripts\n  chmod +x install_bioinfo_tools.sh\n  ./install_bioinfo_tools.sh"
+        }
+      ]
+    },
+    "9": {
+      "title": "RNA-seq差异表达分析（上）",
+      "bio": "差异表达分析是RNA-seq的核心目标，找出处理组vs对照组的差异基因",
+      "scenario": "分析药物处理后的基因表达变化（3对照 vs 3处理）",
+      "tasks": [
+        {
+          "title": "准备count矩阵",
+          "guide": "读取数据：\nlibrary(DESeq2)\ncounts <- read.csv('counts.csv', row.names=1)\ncoldata <- read.csv('metadata.csv', row.names=1)\n\n查看数据：\nhead(counts)\nhead(coldata)"
+        },
+        {
+          "title": "运行DESeq2分析",
+          "guide": "创建DESeq对象：\ndds <- DESeqDataSetFromMatrix(\n  countData = counts,\n  colData = coldata,\n  design = ~ group\n)\n\n运行分析：\ndds <- DESeq(dds)\nres <- results(dds)\n\n查看结果：\nsummary(res)"
+        }
+      ]
+    }
+  }
+}

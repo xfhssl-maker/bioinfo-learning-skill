@@ -1,0 +1,57 @@
+{
+  "concepts": [
+    {
+      "id": "fpkm",
+      "term": "FPKM",
+      "full_name": "Fragments Per Kilobase Million",
+      "category": "RNA-seq",
+      "definition": "每千个碱基的转录每百万映射读取的片段数，用于标准化基因表达量",
+      "why": "消除基因长度和测序深度的影响，使不同基因和样本间的表达量可比",
+      "formula": "FPKM = (fragments / (gene_length/1000 * total_reads/1000000))",
+      "related": ["TPM", "CPM", "RPKM"],
+      "example": "基因A长度2kb，有100个fragments，总reads 10M，则FPKM = 100/(2*10) = 5"
+    },
+    {
+      "id": "tpm",
+      "term": "TPM",
+      "full_name": "Transcripts Per Million",
+      "category": "RNA-seq",
+      "definition": "每百万转录本中的转录本数量",
+      "why": "TPM在样本间可直接比较，总和恒为1M",
+      "formula": "TPM = (reads/length) / sum(reads/length) * 1e6",
+      "related": ["FPKM", "CPM"],
+      "example": "TPM更适合跨样本比较"
+    },
+    {
+      "id": "fdr",
+      "term": "FDR",
+      "full_name": "False Discovery Rate",
+      "category": "统计",
+      "definition": "错误发现率，在多重检验中控制假阳性",
+      "why": "基因组学涉及成千上万次检验，需要校正p值",
+      "formula": "FDR = E(FP) / (FP + TP)",
+      "related": ["p-value", "q-value", "Bonferroni"],
+      "example": "FDR<0.05表示在所有显著结果中，预期有5%是假阳性"
+    },
+    {
+      "id": "vcf",
+      "term": "VCF",
+      "full_name": "Variant Call Format",
+      "category": "变异检测",
+      "definition": "存储基因组变异信息的标准文本格式",
+      "structure": "包含CHROM, POS, ID, REF, ALT, QUAL, FILTER, INFO, FORMAT等字段",
+      "related": ["BAM", "SAM", "BCF"],
+      "example": "chr1 12345 . A G 30 PASS DP=50;AF=0.5"
+    },
+    {
+      "id": "umap",
+      "term": "UMAP",
+      "full_name": "Uniform Manifold Approximation and Projection",
+      "category": "单细胞",
+      "definition": "一种降维算法，用于可视化高维数据",
+      "why": "比t-SNE更快，更好地保留全局结构",
+      "related": ["t-SNE", "PCA"],
+      "use_case": "单细胞数据聚类可视化"
+    }
+  ]
+}

@@ -1,0 +1,195 @@
+{
+  "categories": [
+    {
+      "name": "RNA-seq",
+      "questions": [
+        {
+          "id": "rna_1",
+          "question": "解释RNA-seq分析流程",
+          "answer": "RNA-seq标准分析流程包括：\n1. 质量控制（FastQC）\n2. 去接头和质量过滤（Trimmomatic/cutadapt）\n3. 序列比对（HISAT2/STAR）\n4. 定量（featureCounts/HTSeq）\n5. 差异分析（DESeq2/edgeR）\n6. 功能富集分析",
+          "follow_up": ["如何选择比对工具？", "如何评估比对质量？"]
+        },
+        {
+          "id": "rna_2",
+          "question": "FPKM和TPM的区别是什么？",
+          "answer": "FPKM (Fragments Per Kilobase Million):\n- 先除以基因长度，再除以测序深度\n- 同一样本内可比，但样本间不可直接比较\n\nTPM (Transcripts Per Million):\n- 先除以测序深度，再除以基因长度，最后标准化到百万\n- 样本内和样本间都可比较\n- TPM更适合跨样本比较",
+          "follow_up": ["什么时候用FPKM，什么时候用TPM？", "什么是CPM？"]
+        },
+        {
+          "id": "rna_3",
+          "question": "什么是FDR？为什么要进行多重检验校正？",
+          "answer": "FDR (False Discovery Rate) 是假发现率，指在所有显著结果中假阳性的预期比例。\n\n多重检验校正原因：\n- 差异分析通常检测上万个基因\n- 如果p=0.05，即使没有真实差异基因，也会约500个假阳性\n- FDR控制整体假阳性率在可接受范围内\n\n常用方法：Benjamini-Hochberg (BH) 校正",
+          "follow_up": ["FDR和p-value的区别？", "常用的多重检验校正方法？"]
+        },
+        {
+          "id": "rna_4",
+          "question": "DESeq2和edgeR的区别是什么？",
+          "answer": "DESeq2:\n- 使用负二项分布建模\n- 中位数比率法标准化\n- 更适合中等样本量\n- 默认使用Wald检验\n\nedgeR:\n- 也是负二项分布\n- TMM标准化\n- 更适合小样本量\n- 使用似然比检验或准似然F检验\n\n选择建议：样本量>5用DESeq2，样本量<5用edgeR",
+          "follow_up": ["什么时候用limma？", "如何选择差异分析方法？"]
+        },
+        {
+          "id": "rna_5",
+          "question": "如何评估RNA-seq数据质量？",
+          "answer": "1. FastQC报告：\n   - Per base quality score (>Q30)\n   - GC含量分布\n   - 序列重复水平\n   - 接头含量\n\n2. 比对质量：\n   - 比对率 (>70%)\n   - 唯一比对率\n   - rRNA比例\n\n3. 样本质控：\n   - 基因检出数\n   - 样本相关性\n   - PCA聚类分析",
+          "follow_up": ["Q30代表什么？", "比对率低怎么办？"]
+        }
+      ]
+    },
+    {
+      "name": "WES/变异检测",
+      "questions": [
+        {
+          "id": "wes_1",
+          "question": "简述GATK Best Practices流程",
+          "answer": "GATK Best Practices for Germline Variant Calling:\n\n1. 数据预处理：\n   - 比对（BWA-MEM）\n   - 标记重复（MarkDuplicates）\n   - BQSR（碱基质量分数重校正）\n\n2. 变异检测：\n   - HaplotypeCaller（单样本GVCF模式）\n   - GenotypeGVCFs（联合基因分型）\n\n3. 变异过滤：\n   - VQSR或硬过滤\n\n4. 注释：\n   - SnpEff/ANNOVAR/VEP",
+          "follow_up": ["什么是GVCF？", "VQSR和硬过滤的区别？"]
+        },
+        {
+          "id": "wes_2",
+          "question": "SNP和INDEL的区别是什么？",
+          "answer": "SNP (Single Nucleotide Polymorphism):\n- 单核苷酸多态性\n- 单个碱基的替换\n- 分为转换(A↔G, C↔T)和颠换\n\nINDEL (Insertion/Deletion):\n- 插入或缺失变异\n- 涉及一个或多个碱基\n- 检测难度更高\n\n区别：\n- SNP检测准确率更高\n- INDEL在编码区可能导致移码突变\n- GATK对两者使用不同模型检测",
+          "follow_up": ["如何区分转换和颠换？", "INDEL检测的挑战？"]
+        },
+        {
+          "id": "wes_3",
+          "question": "变异注释常用哪些数据库？",
+          "answer": "人群频率数据库：\n- dbSNP: 已知变异集合\n- gnomAD: 最大人群频率数据库\n- 1000 Genomes: 千人基因组\n\n致病性数据库：\n- ClinVar: 临床相关变异\n- HGMD: 人类基因突变数据库\n- OMIM: 遗传疾病数据库\n\n功能预测：\n- SIFT: 氨基酸替换影响预测\n- PolyPhen: 蛋白功能影响预测\n- CADD: 综合致病性评分",
+          "follow_up": ["如何解读ClinVar评级？", "gnomAD的AF值多少算罕见？"]
+        },
+        {
+          "id": "wes_4",
+          "question": "什么是BQSR？为什么需要BQSR？",
+          "answer": "BQSR (Base Quality Score Recalibration):\n碱基质量分数重校正\n\n为什么需要：\n- 测序仪报告的质量分数存在系统偏差\n- 某些位置的碱基质量被高估或低估\n- 影响变异检测准确性\n\nBQSR步骤：\n1. BaseRecalibrator: 构建校正模型\n2. ApplyBQSR: 应用校正\n\n原理：利用已知变异位点建立模型，校正其他位点的质量分数",
+          "follow_up": ["BQSR需要哪些输入？", "什么情况下不需要BQSR？"]
+        },
+        {
+          "id": "wes_5",
+          "question": "VCF文件包含哪些主要信息？",
+          "answer": "VCF (Variant Call Format) 主要字段：\n\n必须字段：\n- CHROM: 染色体\n- POS: 位置\n- ID: 变异ID（rs号）\n- REF: 参考等位基因\n- ALT: 替代等位基因\n- QUAL: 质量分数\n- FILTER: 过滤状态\n- INFO: 详细信息\n- FORMAT: 样本格式\n\nINFO常用标签：\n- DP: 测序深度\n- AF: 等位基因频率\n- AN: 等位基因总数\n- AC: 等位基因计数",
+          "follow_up": ["如何用bcftools操作VCF？", "GT:0/1代表什么？"]
+        }
+      ]
+    },
+    {
+      "name": "ChIP-seq",
+      "questions": [
+        {
+          "id": "chip_1",
+          "question": "Peak calling的原理是什么？",
+          "answer": "Peak calling原理：\n\n1. MACS2算法核心：\n   - 建模reads分布（泊松/负二项分布）\n   - 比较ChIP样本与背景（Input/Control）\n   - 识别显著富集区域\n\n2. 关键步骤：\n   - 读段偏移校正（shift size）\n   - 局部背景估计\n   - 统计显著性检验\n   - FDR校正\n\n3. 输出：\n   - narrowPeak: 窄峰（转录因子）\n   - broadPeak: 宽峰（组蛋白修饰）",
+          "follow_up": ["narrowPeak和broadPeak的区别？", "如何选择shift size？"]
+        },
+        {
+          "id": "chip_2",
+          "question": "ChIP-seq和ATAC-seq的区别是什么？",
+          "answer": "ChIP-seq:\n- 检测蛋白质-DNA结合位点\n- 需要特异性抗体\n- 用于转录因子和组蛋白修饰\n- Peak代表结合位置\n\nATAC-seq:\n- 检测开放染色质区域\n- 使用Tn5转座酶\n- 不需要抗体\n- Peak代表开放区域\n\n联系：\n- 都是测序技术\n- ATAC-seq可以发现潜在调控区域\n- ChIP-seq可以验证特定因子结合",
+          "follow_up": ["什么时候用ATAC-seq？", "ATAC-seq的数据分析流程？"]
+        },
+        {
+          "id": "chip_3",
+          "question": "如何评估ChIP-seq数据质量？",
+          "answer": "1. 测序质量：\n   - FastQC常规指标\n   - 去重后reads数\n\n2. Peak质量：\n   - Peak总数（合理范围）\n   - FRiP (Fraction of reads in peaks) > 1%\n   - Peak形状（转录因子应为窄峰）\n\n3. 信噪比：\n   - NSC (Normalized Strand Cross-correlation)\n   - RSC (Relative Strand Cross-correlation)\n   - ENCODE标准：NSC > 1.05, RSC > 0.8\n\n4. 可重复性：\n   - IDR分析",
+          "follow_up": ["什么是FRiP？", "IDR分析的作用？"]
+        }
+      ]
+    },
+    {
+      "name": "单细胞测序",
+      "questions": [
+        {
+          "id": "scrna_1",
+          "question": "Seurat分析流程是什么？",
+          "answer": "Seurat标准流程：\n\n1. 数据导入和质控：\n   - CreateSeuratObject\n   - 过滤低质量细胞（nFeature, nCount, percent.mt）\n\n2. 标准化：\n   - NormalizeData\n   - FindVariableFeatures\n   - ScaleData\n\n3. 降维：\n   - RunPCA\n   - RunUMAP/RunTSNE\n\n4. 聚类：\n   - FindNeighbors\n   - FindClusters\n\n5. 注释：\n   - FindAllMarkers\n   - 细胞类型注释",
+          "follow_up": ["如何选择PC数量？", "resolution参数如何设置？"]
+        },
+        {
+          "id": "scrna_2",
+          "question": "如何选择PC数量？",
+          "answer": "选择PC数量的方法：\n\n1. ElbowPlot:\n   - 观察标准差下降曲线\n   - 选择拐点位置\n\n2. JackStraw:\n   - 统计检验PC显著性\n   - 保留显著PC\n\n3. 经验法则：\n   - 通常选择前20-50个PC\n   - 可通过下游聚类质量验证\n\n注意事项：\n- PC太少会丢失信息\n- PC太多可能引入噪音\n- 建议多尝试不同数量",
+          "follow_up": ["PC和基因数的关系？", "如何验证PC选择是否合理？"]
+        },
+        {
+          "id": "scrna_3",
+          "question": "细胞类型注释方法有哪些？",
+          "answer": "细胞类型注释方法：\n\n1. 手动注释：\n   - FindAllMarkers找marker基因\n   - 根据已知marker基因注释\n   - 需要领域知识\n\n2. 自动注释：\n   - SingleR: 与参考数据集比较\n   - scType: 基于marker数据库\n   - CellTypist: 机器学习方法\n\n3. 混合方法：\n   - 先自动注释获得初步结果\n   - 再根据marker基因验证和调整\n\n常见marker基因：\n- T细胞: CD3D, CD3E\n- B细胞: MS4A1, CD79A\n- 巨噬细胞: CD14, CD68",
+          "follow_up": ["如何处理未知细胞类型？", "注释结果不一致怎么办？"]
+        },
+        {
+          "id": "scrna_4",
+          "question": "如何处理批次效应？",
+          "answer": "批次效应处理方法：\n\n1. 整合方法：\n   - Seurat Integration (CCA/RPCA)\n   - Harmony\n   - Scanorama\n   - LIGER\n\n2. Seurat整合流程：\n   - FindIntegrationAnchors\n   - IntegrateData\n\n3. Harmony使用：\n   - RunHarmony(group.by.vars = \"batch\")\n\n选择建议：\n- 批次差异小：Harmony（快速）\n- 批次差异大：Seurat Integration\n- 大规模数据：FastMNN",
+          "follow_up": ["如何评估整合效果？", "整合后如何验证？"]
+        }
+      ]
+    },
+    {
+      "name": "编程与工具",
+      "questions": [
+        {
+          "id": "prog_1",
+          "question": "Linux常用命令有哪些？",
+          "answer": "文件操作：\n- ls, cd, pwd: 目录导航\n- mkdir, rm, cp, mv: 文件管理\n- cat, head, tail, less: 查看文件\n- find, grep, wc: 搜索统计\n\n文本处理：\n- grep: 模式搜索\n- awk: 列处理\n- sed: 流编辑\n- sort, uniq: 排序去重\n- cut, paste: 列操作\n\n进程管理：\n- top, htop: 系统监控\n- ps, kill: 进程管理\n- nohup, &: 后台运行\n\n生信常用：\n- wc -l: 统计行数\n- zcat: 查看压缩文件\n- pipe (|): 管道操作",
+          "follow_up": ["如何查看大文件？", "grep常用参数？"]
+        },
+        {
+          "id": "prog_2",
+          "question": "Python和R的优缺点是什么？",
+          "answer": "Python优点：\n- 通用编程语言，生态丰富\n- 适合大规模数据处理\n- 深度学习支持好\n- 代码可读性强\n\nPython缺点：\n- 生信专用包较少\n- 可视化不如R\n\nR优点：\n- 统计分析原生支持\n- Bioconductor生态丰富\n- ggplot2可视化强大\n- 生信分析首选\n\nR缺点：\n- 大数据处理性能差\n- 学习曲线陡峭\n\n建议：\n- 生信分析主要用R\n- 流程开发用Python/Shell\n- 都要掌握",
+          "follow_up": ["如何选择工具？", "两者的交互方式？"]
+        },
+        {
+          "id": "prog_3",
+          "question": "如何优化代码性能？",
+          "answer": "R语言优化：\n1. 使用向量化操作代替循环\n2. data.table代替data.frame\n3. 并行计算（parallel, foreach）\n4. 内存管理（rm(), gc()）\n\nPython优化：\n1. 使用NumPy向量化\n2. Pandas优化（避免迭代）\n3. 多进程（multiprocessing）\n4. 使用Cython/Numba加速\n\n通用原则：\n- 先分析瓶颈（profiling）\n- 避免重复计算\n- 使用合适的数据结构\n- 必要时使用数据库\n\n工具：\n- R: profvis, Rprof\n- Python: cProfile, line_profiler",
+          "follow_up": ["如何进行并行计算？", "如何处理大数据？"]
+        }
+      ]
+    },
+    {
+      "name": "场景题",
+      "questions": [
+        {
+          "id": "scene_1",
+          "question": "遇到过什么技术难题？如何解决的？",
+          "answer": "回答框架：\n\n1. 描述问题（STAR法则）：\n   - Situation: 项目背景\n   - Task: 需要完成的任务\n   - Action: 采取的行动\n   - Result: 最终结果\n\n2. 示例回答：\n   \"在做RNA-seq分析时，发现样本PCA聚类异常，\n   通过检查发现是批次效应导致的。\n   我使用ComBat进行了批次校正，\n   最终聚类结果符合预期。\"\n\n3. 展示的技能：\n   - 问题诊断能力\n   - 解决方案的思考过程\n   - 技术实现能力\n   - 结果验证意识",
+          "follow_up": ["如何避免类似问题？", "学到了什么？"]
+        },
+        {
+          "id": "scene_2",
+          "question": "项目中遇到bug如何解决？",
+          "answer": "Debug方法论：\n\n1. 复现问题：\n   - 确认bug可稳定复现\n   - 记录错误信息和环境\n\n2. 定位问题：\n   - 查看错误日志\n   - 逐步缩小范围\n   - 检查输入数据和参数\n\n3. 解决问题：\n   - 查阅文档和社区\n   - 最小化复现\n   - 验证修复\n\n4. 预防措施：\n   - 添加单元测试\n   - 改进错误处理\n   - 更新文档\n\n常用工具：\n- R: traceback(), browser(), debug()\n- Python: pdb, print调试",
+          "follow_up": ["如何预防bug？", "如何写测试？"]
+        },
+        {
+          "id": "scene_3",
+          "question": "如何学习一个新的生信工具？",
+          "answer": "学习新工具的步骤：\n\n1. 了解背景：\n   - 工具解决什么问题\n   - 与其他工具的比较\n\n2. 安装测试：\n   - 查看官方文档\n   - 用测试数据运行\n\n3. 理解原理：\n   - 阅读论文\n   - 理解核心算法\n\n4. 实践应用：\n   - 用真实数据测试\n   - 分析结果合理性\n\n5. 总结记录：\n   - 写使用笔记\n   - 记录遇到的问题\n\n资源：\n- 官方文档\n- GitHub Issues\n- Biostars/Stack Overflow\n- 论文方法部分",
+          "follow_up": ["如何评估工具质量？", "如何选择合适工具？"]
+        }
+      ]
+    },
+    {
+      "name": "统计学基础",
+      "questions": [
+        {
+          "id": "stat_1",
+          "question": "什么是p-value？",
+          "answer": "P-value定义：\n在原假设为真的前提下，观测到当前或更极端结果的概率。\n\n理解要点：\n- 不是原假设为真的概率\n- 不是效应大小的度量\n- 受样本量影响\n\n常见误解：\n- p < 0.05 不等于结果重要\n- p > 0.05 不等于没有效应\n\n生信应用：\n- 差异分析p值阈值通常0.05\n- 结合FDR使用\n- 考虑效应大小（fold change）",
+          "follow_up": ["p值的局限性？", "置信区间与p值的关系？"]
+        },
+        {
+          "id": "stat_2",
+          "question": "什么是假设检验？",
+          "answer": "假设检验框架：\n\n1. 提出假设：\n   - H0 (原假设): 无差异\n   - H1 (备择假设): 有差异\n\n2. 选择检验方法：\n   - t检验: 两组比较\n   - ANOVA: 多组比较\n   - 卡方检验: 分类变量\n\n3. 计算统计量和p值\n\n4. 做出决策：\n   - p < α: 拒绝H0\n   - p ≥ α: 不能拒绝H0\n\n类型：\n- 参数检验: 假设分布已知\n- 非参数检验: 无分布假设\n\n生信常用：\n- 差异分析: 负二项分布检验\n- 富集分析: 超几何检验/Fisher精确检验",
+          "follow_up": ["第一类和第二类错误？", "如何选择检验方法？"]
+        },
+        {
+          "id": "stat_3",
+          "question": "什么是相关性分析？",
+          "answer": "相关性分析：\n\n常用相关系数：\n1. Pearson相关:\n   - 线性关系\n   - 连续变量\n   - 对异常值敏感\n\n2. Spearman相关:\n   - 单调关系\n   - 可用于序数变量\n   - 对异常值稳健\n\n3. Kendall相关:\n   - 秩相关\n   - 小样本更稳健\n\n生信应用：\n- 共表达分析\n- 样本相关性检验\n- 转录因子-基因相关性\n\n注意事项：\n- 相关不等于因果\n- 检查数据分布\n- 注意异常值影响",
+          "follow_up": ["Pearson和Spearman如何选择？", "如何可视化相关性？"]
+        }
+      ]
+    }
+  ]
+}

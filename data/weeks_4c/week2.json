@@ -1,0 +1,87 @@
+{
+  "weeks": [
+    {
+      "week": 2,
+      "phase": 1,
+      "title": "Linux进阶 + Shell脚本",
+      "difficulty": "★☆☆☆☆",
+      "learning_hours": 10,
+      "practice_hours": 5,
+
+      "biological_context": {
+        "why": "生信分析需要批量处理数据，手动操作效率低且易出错。Shell脚本可以自动化重复任务，是生信工作者的必备技能",
+        "real_scenario": "一个RNA-seq项目有50个样本，需要对每个样本进行质控、过滤、比对。手动操作需要数天，脚本化后只需几小时",
+        "industry_standard": "生信公司要求所有分析流程必须脚本化，便于复现和批量处理"
+      },
+
+      "cognitive_dimension": {
+        "bloom_levels": {
+          "remember": ["列出grep、awk、sed的基本语法", "说出管道符和重定向的区别"],
+          "understand": ["解释for循环的执行流程", "说明正则表达式的匹配原理"],
+          "apply": ["用grep筛选FASTQ文件中的特定序列", "用awk统计文件的列数据"],
+          "analyze": ["比较grep和awk的使用场景", "分析复杂Shell命令的执行顺序"],
+          "evaluate": ["评估脚本的效率和可读性", "判断何时使用Shell vs Python"],
+          "create": ["编写批量处理FASTQ文件的脚本"]
+        },
+        "learning_strategy": "刻意练习 + 错误分析",
+        "practice_method": "每个命令写10个不同场景的例子",
+        "metacognition": [
+          "我能独立写出for循环处理多个文件吗？",
+          "遇到复杂文本处理，我知道选择grep/awk/sed中的哪个吗？",
+          "我的脚本有没有考虑错误处理？"
+        ]
+      },
+
+      "collaborative_dimension": {
+        "peer_learning": {
+          "pair_programming": "两人一组，一人写脚本，一人review，处理10个FASTQ文件的批量重命名任务",
+          "group_discussion": "小组讨论：分享本周遇到的Shell难题和解决方案",
+          "code_review_checklist": ["脚本是否有注释？", "变量命名是否清晰？", "是否处理了错误情况？"]
+        },
+        "community": {
+          "share": "在学习群分享一个实用的Shell技巧",
+          "help": "帮助至少一位同学解决Shell脚本问题"
+        }
+      },
+
+      "contextual_dimension": {
+        "real_scenario": {
+          "title": "场景：批量处理测序数据质控报告",
+          "background": "公司收到50个样本的测序数据，需要快速生成质控统计报告给项目经理",
+          "deadline": "2小时内完成",
+          "tasks": [
+            {"step": 1, "action": "统计每个FASTQ文件的reads数量", "command": "for f in *.fastq; do echo \"$f: $(($(wc -l < $f)/4))\"; done"},
+            {"step": 2, "action": "提取所有样本的GC含量", "command": "grep -v '^>' *.fasta | awk '{gc+=gsub(/[GC]/,\"\")} END {print gc/NR*100}'"},
+            {"step": 3, "action": "批量重命名文件（添加日期前缀）", "command": "for f in *.fastq; do mv \"$f\" \"20240101_$f\"; done"},
+            {"step": 4, "action": "生成汇总报告", "command": "echo 'Sample,Reads,Size' > report.csv; for f in *.fastq; do echo \"$f,$(($(wc -l < $f)/4)),$(du -h $f | cut -f1)\" >> report.csv; done"}
+          ],
+          "deliverable": "生成CSV格式的质控报告，发送给项目经理"
+        },
+        "role": "实习生",
+        "industry_practice": {
+          "naming": "脚本命名规范：动词_名词.sh (如 process_fastq.sh)",
+          "structure": "脚本必须包含：shebang、注释、错误处理、日志输出",
+          "version_control": "所有脚本必须提交到Git"
+        }
+      },
+
+      "tasks": [
+        {"id": "w2t1", "type": "practice", "cognitive_level": "apply", "desc": "完成Rosalind前5题", "context": "练习基础算法思维", "time": "2小时", "collaboration": "可以讨论思路但独立编码"},
+        {"id": "w2t2", "type": "project", "cognitive_level": "create", "desc": "编写批量重命名脚本", "context": "模拟真实工作场景", "time": "1小时", "collaboration": "完成后请同学review"},
+        {"id": "w2t3", "type": "project", "cognitive_level": "create", "desc": "完成'批量质控报告'场景任务", "context": "真实工作模拟", "time": "2小时", "success_criteria": "生成正确的CSV报告"},
+        {"id": "w2t4", "type": "output", "cognitive_level": "understand", "desc": "写博客：《grep/awk/sed实战案例》", "context": "知识总结与分享", "time": "1.5小时"},
+        {"id": "w2t5", "type": "reflection", "cognitive_level": "evaluate", "desc": "本周学习反思", "time": "15分钟"}
+      ],
+
+      "resources": {
+        "must_read": [{"name": "Shell脚本编程入门", "url": "https://www.runoob.com/linux/linux-shell.html", "time": "3小时"}],
+        "practice": [{"name": "Rosalind基础题", "url": "http://rosalind.info/problems/locations/"}]
+      },
+
+      "assessment": {
+        "self_check": ["能独立写for循环批量处理文件", "能用grep/awk/sed处理文本", "能写带错误处理的脚本"],
+        "practical_test": "30分钟内写出批量统计FASTQ文件信息的脚本"
+      }
+    }
+  ]
+}

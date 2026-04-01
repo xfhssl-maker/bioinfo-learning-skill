@@ -1,0 +1,158 @@
+{
+  "tasks": {
+    "w1t1": {
+      "steps": [
+        {"step": 1, "content": "访问 GitHub 官网: https://github.com"},
+        {"step": 2, "content": "点击右上角 \"Sign up\" 注册按钮"},
+        {"step": 3, "content": "填写用户名、邮箱、密码"},
+        {"step": 4, "content": "完成邮箱验证"},
+        {"step": 5, "content": "点击右上角 \"+\" → \"New repository\""},
+        {"step": 6, "content": "仓库名填写: bioinfo-learning"},
+        {"step": 7, "content": "选择 Public，勾选 Add a README file"},
+        {"step": 8, "content": "点击 \"Create repository\" 完成创建"}
+      ],
+      "tips": ["用户名建议使用真实姓名或常用ID", "密码要足够复杂，建议使用密码管理器"],
+      "outputs": ["GitHub账号", "bioinfo-learning 仓库"]
+    },
+    "w1t2": {
+      "steps": [
+        {"step": 1, "content": "访问 Gitee 官网: https://gitee.com"},
+        {"step": 2, "content": "点击 \"注册\" 按钮"},
+        {"step": 3, "content": "填写手机号、邮箱等信息"},
+        {"step": 4, "content": "完成手机验证"},
+        {"step": 5, "content": "设置个人空间地址"}
+      ],
+      "tips": ["Gitee是国内平台，访问速度更快", "可以作为GitHub的备份"],
+      "outputs": ["Gitee账号"]
+    },
+    "w1t3": {
+      "steps": [
+        {"step": 1, "content": "打开终端（Terminal/PowerShell/WSL）"},
+        {"step": 2, "content": "执行命令: cd ~ 进入用户主目录"},
+        {"step": 3, "content": "执行命令: mkdir -p bioinfo/{data,scripts,results,notes}"},
+        {"step": 4, "content": "执行命令: ls -la bioinfo 查看创建的目录"},
+        {"step": 5, "content": "执行命令: tree bioinfo 或 ls -R bioinfo 查看完整结构"}
+      ],
+      "code_example": "mkdir -p ~/bioinfo/{data,scripts,results,notes}",
+      "tips": ["~ 代表用户主目录", "-p 参数可以创建多级目录", "{} 可以一次性创建多个子目录"],
+      "outputs": ["bioinfo/ 项目目录", "data/ 数据目录", "scripts/ 脚本目录", "results/ 结果目录", "notes/ 笔记目录"]
+    },
+    "w1t4": {
+      "steps": [
+        {"step": 1, "content": "在 notes 目录创建文件: touch notes/linux_commands.md"},
+        {"step": 2, "content": "用编辑器打开: vim notes/linux_commands.md 或 code notes/linux_commands.md"},
+        {"step": 3, "content": "记录今天学习的命令及用法"},
+        {"step": 4, "content": "包含: 命令名称、语法、常用参数、示例"},
+        {"step": 5, "content": "保存文件"}
+      ],
+      "template": "# Linux基础命令总结\n\n## 文件操作\n\n### ls - 列出目录内容\n- `ls` 列出当前目录\n- `ls -l` 详细信息\n- `ls -a` 显示隐藏文件\n- `ls -h` 人类可读的文件大小\n\n### cd - 切换目录\n- `cd ~` 回到主目录\n- `cd ..` 上级目录\n- `cd -` 上一个目录\n\n...",
+      "outputs": ["Linux基础命令总结.md"]
+    },
+    "w1t5": {
+      "steps": [
+        {"step": 1, "content": "在 bioinfo-learning 目录页面，点击 \"Add file\" → \"Upload files\""},
+        {"step": 2, "content": "将 notes/linux_commands.md 拖拽到上传区域"},
+        {"step": 3, "content": "在 Commit changes 填写提交信息"},
+        {"step": 4, "content": "点击 \"Commit changes\" 提交"}
+      ],
+      "tips": ["提交信息要清晰描述本次修改", "也可以用 git 命令行提交"],
+      "outputs": ["GitHub上的笔记文件"]
+    },
+    "w2t1": {
+      "steps": [
+        {"step": 1, "content": "访问 Rosalind: http://rosalind.info/problems/locations/"},
+        {"step": 2, "content": "注册账号并登录"},
+        {"step": 3, "content": "完成 DNA 计数题 (Counting DNA Nucleotides)"},
+        {"step": 4, "content": "完成 RNA 转录题 (Transcribing DNA into RNA)"},
+        {"step": 5, "content": "完成 DNA 互补链题 (Complementing a Strand of DNA)"},
+        {"step": 6, "content": "完成 GC含量计算题 (Computing GC Content)"},
+        {"step": 7, "content": "完成 Hamming距离题 (Counting Point Mutations)"},
+        {"step": 8, "content": "将代码保存到 scripts/rosalind/ 目录"}
+      ],
+      "tips": ["每道题可以多次提交直到正确", "注意阅读题目要求和示例"],
+      "outputs": ["5道Rosalind题目的代码"]
+    },
+    "w2t2": {
+      "steps": [
+        {"step": 1, "content": "创建脚本: touch scripts/batch_rename.sh"},
+        {"step": 2, "content": "编写批量重命名逻辑，使用 for 循环"},
+        {"step": 3, "content": "添加 mv 命令实现重命名"},
+        {"step": 4, "content": "测试脚本（先用 echo 验证）"},
+        {"step": 5, "content": "添加执行权限: chmod +x scripts/batch_rename.sh"}
+      ],
+      "code_example": "#!/bin/bash\nfor file in *.txt; do\n    mv \"$file\" \"new_${file}\"\ndone",
+      "outputs": ["batch_rename.sh 脚本"]
+    },
+    "w3t1": {
+      "steps": [
+        {"step": 1, "content": "下载 R: https://cran.r-project.org/"},
+        {"step": 2, "content": "选择对应操作系统的安装包"},
+        {"step": 3, "content": "运行安装程序，按提示安装"},
+        {"step": 4, "content": "下载 RStudio: https://posit.co/download/rstudio-desktop/"},
+        {"step": 5, "content": "运行 RStudio 安装程序"},
+        {"step": 6, "content": "打开 RStudio，检查 R 版本: version"}
+      ],
+      "tips": ["建议安装最新版 R (4.3.x)", "RStudio 是 R 的 IDE，强烈推荐"],
+      "outputs": ["R环境", "RStudio IDE"]
+    },
+    "w3t2": {
+      "steps": [
+        {"step": 1, "content": "在 RStudio 中创建新脚本: File → New File → R Script"},
+        {"step": 2, "content": "练习向量创建: x <- c(1, 2, 3, 4, 5)"},
+        {"step": 3, "content": "练习矩阵: m <- matrix(1:9, nrow=3)"},
+        {"step": 4, "content": "练习数据框: df <- data.frame(name=c('A','B'), value=c(1,2))"},
+        {"step": 5, "content": "练习列表: lst <- list(a=1, b='text', c=c(1,2,3))"},
+        {"step": 6, "content": "完成10个练习并保存到 R-basics/practice.R"}
+      ],
+      "code_example": "# 向量操作\nx <- c(1, 2, 3, 4, 5)\nmean(x)\nsum(x)\n\n# 数据框操作\ndf <- data.frame(\n  gene = c('TP53', 'BRCA1', 'EGFR'),\n  expression = c(100, 200, 150)\n)\n\n# 筛选\ndf[df$expression > 120, ]",
+      "outputs": ["R基础练习代码"]
+    },
+    "w4t2": {
+      "steps": [
+        {"step": 1, "content": "安装 tidyverse: install.packages('tidyverse')"},
+        {"step": 2, "content": "加载库: library(tidyverse)"},
+        {"step": 3, "content": "创建散点图展示两组变量关系"},
+        {"step": 4, "content": "创建箱线图比较不同组分布"},
+        {"step": 5, "content": "创建柱状图展示计数或汇总"},
+        {"step": 6, "content": "创建热图展示矩阵数据"},
+        {"step": 7, "content": "创建折线图展示趋势变化"}
+      ],
+      "code_example": "# ggplot2 基础语法\nggplot(data, aes(x, y)) +\n  geom_point() +\n  labs(title='标题', x='X轴', y='Y轴') +\n  theme_bw()\n\n# 箱线图\nggplot(data, aes(group, value, fill=group)) +\n  geom_boxplot()\n\n# 热图\npheatmap(matrix_data, cluster_rows=TRUE, cluster_cols=TRUE)",
+      "outputs": ["5个可视化作品图片"]
+    },
+    "w5t1": {
+      "steps": [
+        {"step": 1, "content": "下载 Miniconda: https://docs.conda.io/en/latest/miniconda.html"},
+        {"step": 2, "content": "选择 Python 3.x 版本"},
+        {"step": 3, "content": "运行安装程序，勾选 'Add to PATH'"},
+        {"step": 4, "content": "打开新终端，验证: conda --version"},
+        {"step": 5, "content": "验证 Python: python --version"}
+      ],
+      "tips": ["Miniconda 比 Anaconda 更轻量", "记得勾选添加到PATH"],
+      "outputs": ["Conda环境", "Python 3.x"]
+    },
+    "w7t1": {
+      "steps": [
+        {"step": 1, "content": "打开终端，执行: conda create -n bioinfo python=3.11 -y"},
+        {"step": 2, "content": "激活环境: conda activate bioinfo"},
+        {"step": 3, "content": "验证环境: conda info --envs"},
+        {"step": 4, "content": "查看已安装包: conda list"}
+      ],
+      "tips": ["每个项目建议创建独立环境", "-n 指定环境名称"],
+      "outputs": ["bioinfo conda环境"]
+    },
+    "w7t2": {
+      "steps": [
+        {"step": 1, "content": "配置 bioconda 频道（如果未配置）"},
+        {"step": 2, "content": "安装 FastQC: conda install -c bioconda fastqc -y"},
+        {"step": 3, "content": "安装 Trimmomatic: conda install -c bioconda trimmomatic -y"},
+        {"step": 4, "content": "安装 BWA: conda install -c bioconda bwa -y"},
+        {"step": 5, "content": "安装 SAMtools: conda install -c bioconda samtools -y"},
+        {"step": 6, "content": "安装 HISAT2: conda install -c bioconda hisat2 -y"},
+        {"step": 7, "content": "验证安装: fastqc --version, samtools --version"}
+      ],
+      "code_example": "# 一次性安装多个工具\nconda install -c bioconda -y \\\n    fastqc \\\n    trimmomatic \\\n    bwa \\\n    samtools \\\n    bcftools \\\n    hisat2 \\\n    bedtools",
+      "outputs": ["生信分析工具集"]
+    }
+  }
+}
