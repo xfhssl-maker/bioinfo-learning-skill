@@ -1,0 +1,46 @@
+{
+  "required_files": [
+    ".claude/skills/bioinfo-learning/SKILL.md",
+    ".claude/skills/bioinfo-learning/scripts/bioinfo.py"
+  ],
+  "required_directories": [
+    ".claude/skills/bioinfo-learning/references",
+    ".claude/skills/bioinfo-learning/assets",
+    "data",
+    "docs",
+    "tests"
+  ],
+  "optional_directories": [
+    "logs",
+    ".github/workflows",
+    ".claude/lint",
+    ".claude/scripts",
+    "reports/health"
+  ],
+  "rules": [
+    {
+      "id": "skill-frontmatter",
+      "description": "SKILL.md 必须包含有效的 YAML frontmatter",
+      "check": "head -1 .claude/skills/bioinfo-learning/SKILL.md | grep -q '^---$'",
+      "severity": "error"
+    },
+    {
+      "id": "json-valid",
+      "description": "data/ 下所有 JSON 文件必须格式有效",
+      "check": "python -m json.tool data/curriculum.json > /dev/null 2>&1",
+      "severity": "error"
+    },
+    {
+      "id": "gitignore-exists",
+      "description": "项目根必须有 .gitignore",
+      "check": "test -f .gitignore",
+      "severity": "error"
+    },
+    {
+      "id": "readme-exists",
+      "description": "项目根必须有 README.md",
+      "check": "test -f README.md",
+      "severity": "error"
+    }
+  ]
+}

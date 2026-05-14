@@ -1,0 +1,47 @@
+name: Data Validate
+
+on:
+  push:
+    paths:
+      - 'data/**'
+  pull_request:
+    paths:
+      - 'data/**'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Validate all JSON files
+        run: |
+          errors=0
+          while IFS= read -r -d '' f; do
+            if ! python -m json.tool "$f" > /dev/null 2>&1; then
+              echo "INVALID JSON: $f"
+              errors=$((errors + 1))
+            fi
+          done < <(find data -name '*.json' -print0)
+          echo "Total invalid files: $errors"
+          [ "$errors" -eq 0 ] || exit 1
+
+      - name: Check curriculum structure
+        run: |
+          python -c "
+          import json
+          with open('data/curriculum.json') as f:
+            data = json.load(f)
+          weeks = data.get('weeks', [])
+          assert len(weeks) > 0, 'No weeks found'
+          for w in weeks:
+            assert 'week' in w, f'Week missing week number: {w}'
+            assert 'tasks' in w, f'Week {w[\"week\"]} missing tasks'
+            assert len(w['tasks']) > 0, f'Week {w[\"week\"]} has no tasks'
+          print(f'Curriculum OK: {len(weeks)} weeks')
+          "

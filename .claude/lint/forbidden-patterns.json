@@ -1,0 +1,39 @@
+{
+  "forbidden": [
+    {
+      "pattern": "localhost|127\\.0\\.0\\.1",
+      "reason": "硬编码本地地址，应使用可配置变量",
+      "severity": "warning"
+    },
+    {
+      "pattern": "api_key|api-secret|password|token.*=.*['\"][A-Za-z0-9]{16,}",
+      "reason": "API 密钥不应硬编码在代码中",
+      "severity": "error"
+    },
+    {
+      "pattern": "localStorage\\.(getItem|setItem|removeItem)\\s*\\(\\s*['\"]user_",
+      "reason": "用户进度数据应通过 bioinfo.py CLI 管理，而非直接操作 localStorage",
+      "severity": "warning"
+    },
+    {
+      "pattern": "console\\.log\\(",
+      "reason": "调试日志不应提交到主分支",
+      "severity": "warning"
+    },
+    {
+      "pattern": "TODO|FIXME|HACK|XXX",
+      "reason": "未解决的标记项应在合并前处理",
+      "severity": "info"
+    },
+    {
+      "pattern": "git clone https://github\\.com/your-repo/",
+      "reason": "占位符 URL 应替换为真实仓库地址",
+      "severity": "error"
+    },
+    {
+      "pattern": "YOUR_API_KEY",
+      "reason": "占位符 API 密钥不应提交",
+      "severity": "error"
+    }
+  ]
+}

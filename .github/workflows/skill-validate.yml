@@ -1,0 +1,50 @@
+name: Skill Validate
+
+on:
+  pull_request:
+    paths:
+      - '.claude/skills/**'
+      - 'data/**'
+      - 'tests/**'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Check SKILL.md frontmatter
+        run: |
+          head -1 .claude/skills/bioinfo-learning/SKILL.md | grep -q '^---$' || exit 1
+          echo "SKILL.md frontmatter OK"
+
+      - name: Validate lint rules
+        run: |
+          python -m json.tool .claude/lint/forbidden-patterns.json > /dev/null
+          python -m json.tool .claude/lint/structure-rules.json > /dev/null
+          echo "Lint rules valid"
+
+      - name: Validate data JSON files
+        run: |
+          for f in data/*.json; do
+            python -m json.tool "$f" > /dev/null || echo "INVALID: $f"
+          done
+          echo "Data JSON files OK"
+
+      - name: Validate reference files exist
+        run: |
+          for ref in \
+            references/curriculum_overview.md \
+            references/concepts_reference.md \
+            references/tools_reference.md \
+            references/databases_reference.md \
+            references/interview_questions.md \
+            references/data_skills_methodology.md; do
+            test -f ".claude/skills/bioinfo-learning/$ref" || echo "MISSING: $ref"
+          done
+          echo "Reference files check complete"

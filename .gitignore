@@ -43,3 +43,8 @@ ENV/
 
 # Local data (user progress is stored in browser localStorage)
 # But keep data files for reference
+
+# Harness
+logs/*.jsonl
+reports/health/*.md
+!reports/health/.gitkeep
